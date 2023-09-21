@@ -1,0 +1,15 @@
+{
+  "type_of_reference": "JOUR",
+  "primary_title": "BEDTools: A flexible suite of utilities for comparing genomic features",
+  "first_authors": [
+    "Quinlan, Aaron R.",
+    "Hall, Ira M."
+  ],
+  "publication_year": "2010/01//",
+  "alternate_title3": "Bioinformatics",
+  "volume": "26",
+  "number": "6",
+  "start_page": "841",
+  "end_page": "842",
+  "doi": "10.1093/bioinformatics/btq033"
+}

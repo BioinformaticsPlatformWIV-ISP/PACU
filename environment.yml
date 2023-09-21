@@ -1,0 +1,18 @@
+name: sciensnp_env_bck
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools=1.17
+  - beautifulsoup4=4.12.2
+  - figtree=1.4.4
+  - gubbins=3.3.1
+  - matplotlib-base=3.8.0
+  - pandas=2.1.0
+  - pyvcf=0.6.8
+  - samtools=1.17
+  - snakemake=7.32.4
+  - snp-dists=0.8.2
+  - upsetplot=0.8.0
+  - yattag=1.15.1

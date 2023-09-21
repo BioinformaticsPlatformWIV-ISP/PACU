@@ -1,0 +1,224 @@
+body {
+    max-width: 960px;
+    min-width: 640px;
+}
+
+div.header {
+    background-color: #eaeaea;
+    border: 1px solid #000000;
+    margin:0;
+    padding: 0.5em;
+    font-size: 200%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+div.sub_header {
+    background-color: #eaeaea;
+    border: 1px solid #000000;
+    padding: 0.25em 0.25em 0.25em 0.8em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    border-radius: 4px;
+    text-align: center;
+}
+
+div.report_section {
+    border-bottom:1px solid #dfdfdf;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0.3em 1em 1em;
+}
+
+div.border_bottom {
+    border-bottom:1px solid #dfdfdf;
+    padding-bottom: 1em;
+}
+
+#header_logo {
+    vertical-align: middle;
+    clear: right;
+    display: inline-block;
+    margin-right: 16px;
+}
+
+table.information tr > td:first-child {
+    font-weight: bold;
+}
+
+.alert-box {
+    color:#555;
+    border-radius:10px;
+    font-family:Tahoma,Geneva,Arial,sans-serif;font-size:14px;
+    padding:10px 10px 10px 36px;
+    margin:10px;
+}
+
+.alert-box span {
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+.error {
+    color: #721c24;
+    background-color:#f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+}
+
+.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.not-available {
+    color:red;
+}
+
+/* Background colors */
+.green {
+    background-color: #6EBE50;
+}
+
+.lightgreen {
+    background-color: #BEDCBE;
+}
+.red {
+    background-color: #ff8080;
+}
+
+.grey {
+    background-color: #bfbfbf;
+}
+
+.yellow {
+    background-color: #f4d142;
+}
+
+.orange {
+    background-color: #ffa839;
+}
+
+.plot_cds {
+    background-color: rgb(229, 196, 148);
+}
+
+.plot_rrna {
+    background-color: rgb(255, 217, 47);
+}
+
+.plot_intergenic {
+    background-color: rgb(252, 141, 98);
+}
+.plot_pseudo {
+    background-color: rgb(231, 138, 195);
+}
+
+/* Global table settings */
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding: 4px 4px;
+}
+
+th {
+    padding: 4px 4px;
+}
+
+/* Table for displaying data */
+table.data {
+    border: 1px solid black;
+}
+
+table.data td {
+    border: 1px solid black;
+    min-width: 45px;
+    text-align: center;
+}
+
+table.data th {
+    border: 1px solid black;
+    font-weight: bold;
+    background-color: #f2f2f2;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-bottom: 8px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.header-subtitle {
+  color: #6d6d6d;
+}
+
+img.bordered {
+  border: 1px solid grey;
+  padding: 8px;
+}
+
+code.command {
+  font-size: 14px;
+}

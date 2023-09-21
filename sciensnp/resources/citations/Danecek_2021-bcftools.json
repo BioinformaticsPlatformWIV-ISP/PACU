@@ -1,0 +1,33 @@
+{
+  "type_of_reference": "JOUR",
+  "primary_title": "Twelve years of SAMtools and BCFtools",
+  "first_authors": [
+    "Danecek, Petr",
+    "Bonfield, James K.",
+    "Liddle, Jennifer",
+    "Marshall, John",
+    "Ohan, Valeriu",
+    "Pollard, Martin O.",
+    "Whitwham, Andrew",
+    "Keane, Thomas",
+    "McCarthy, Shane A.",
+    "Davies, Robert M."
+  ],
+  "publication_year": "2021///",
+  "keywords": [
+    "bcftools",
+    "data analysis",
+    "high-throughput sequencing",
+    "next generation sequencing",
+    "samtools",
+    "variant calling"
+  ],
+  "publisher": "Oxford University Press",
+  "alternate_title3": "GigaScience",
+  "volume": "10",
+  "number": "2",
+  "start_page": "1",
+  "end_page": "4",
+  "issn": "0000000181174",
+  "doi": "10.1093/gigascience/giab008"
+}

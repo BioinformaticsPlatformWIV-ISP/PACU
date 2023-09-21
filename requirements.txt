@@ -1,0 +1,8 @@
+PyVCF==0.6.8
+PyYAML==6.0
+beautifulsoup4==4.11.1
+biopython==1.79
+matplotlib==3.7.1
+pandas==2.1.0
+snakemake==7.18.2
+yattag==1.14.0
