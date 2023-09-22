@@ -38,7 +38,7 @@ setup(
             'resources/citations/*.json',
             'resources/figtree_template.txt',
             'resources/mega/*.mao',
-            'resources/snp_workflow.smk'
+            'resources/snp_workflow.smk',
             'resources/style.css',
             'resources/testdata/bam/ilmn/*.bai',
             'resources/testdata/bam/ilmn/*.bam',
