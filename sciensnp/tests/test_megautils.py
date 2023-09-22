@@ -4,7 +4,6 @@ from importlib.resources import files
 from pathlib import Path
 
 from sciensnp.app.utils import megautils
-from sciensnp.config import config
 
 
 class TestMEGAUtils(unittest.TestCase):
@@ -18,7 +17,7 @@ class TestMEGAUtils(unittest.TestCase):
         """
         Tests the model selection functionality with regular input.
         """
-        with tempfile.TemporaryDirectory(prefix='mega_', dir=config['dir_temp']) as dir_:
+        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
             path_out = Path(dir_, 'model_selection.csv')
             megautils.run_model_selection(
                 path_fasta=TestMEGAUtils.path_fasta,
@@ -40,7 +39,7 @@ class TestMEGAUtils(unittest.TestCase):
         Tests the tree building functionality with regular input.
         :return: None
         """
-        with tempfile.TemporaryDirectory(prefix='mega_', dir=config['dir_temp']) as dir_:
+        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
             path_model_selection_csv = Path(str(files('sciensnp').joinpath(
                 'resources/testdata/mega/model_selection_output.csv')))
 

@@ -1,3 +1,0 @@
-dir_temp: /scratch/temp
-threads: 16
-data_format: '%d/%m/%Y - %X'

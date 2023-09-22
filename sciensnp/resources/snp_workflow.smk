@@ -1,4 +1,5 @@
 import logging
+import shutil
 from importlib.resources import files
 from pathlib import Path
 
@@ -80,7 +81,6 @@ rule variant_calling_bcftools_mpileup:
         profile = lambda wildcards: 'illumina' if config['input'][wildcards.key]['tech'] == 'ilmn' else 'ont'
     shell:
         """
-        # module load bcftools/1.17;
         bcftools mpileup {input.BAM} --fasta-ref {input.FASTA} --output {output.VCF_GZ} --output-type v \
             --config {params.profile};
         """
@@ -97,7 +97,6 @@ rule variant_calling_bcftools_call:
         mutation_rate = lambda wildcards: '1.1e-3' if config['input'][wildcards.key]['tech'] == 'ilmn' else '0.01'
     shell:
         """
-        # module load bcftools/1.17;
         bcftools call {input.VCF_GZ} --output {output.VCF_GZ} --output-type v -P {params.mutation_rate} \
             --variants-only --skip-variants indels --ploidy 1 --consensus-caller;
         """
@@ -114,7 +113,6 @@ rule variant_filtering_allele_freq:
         expr = f"((DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3])) < {config['filters']['min_af']}"
     shell:
         """
-        # module load bcftools/1.17;
         bcftools filter --output-type z --soft-filter af --exclude "{params.expr}" {input.VCF_GZ} \
             --output {output.VCF_GZ};
         """
@@ -131,7 +129,6 @@ rule variant_filtering_depth:
         min_dp = config['filters']['min_depth']
     shell:
         """
-        # module load bcftools/1.17;
         bcftools filter --output-type z --soft-filter dp --exclude "DP<{params.min_dp}" {input.VCF_GZ} \
             --output {output.VCF_GZ};
         """
@@ -148,7 +145,6 @@ rule variant_filtering_qual:
         min_qual = config['filters']['min_qual']
     shell:
         """
-        # module load bcftools/1.17;
         bcftools filter --output-type z --soft-filter qual --exclude "QUAL<{params.min_qual}" {input.VCF_GZ} \
             --output {output.VCF_GZ};
         """
@@ -166,8 +162,6 @@ rule gubbins_consensus_create:
         VCF_GZ = lambda wildcards: f'gubbins/{wildcards.key}/tmp_variants_{wildcards.key}.vcf.gz'
     shell:
         """
-        # module load bcftools/1.17;
-
         # Compress and index input VCF file
         cp {input.VCF_GZ} {params.VCF_GZ};
         bcftools index -f {params.VCF_GZ};
@@ -242,18 +236,21 @@ rule gubbins_run:
 
         # Run Gubbins
         command = Command(' '.join([
-            # 'module load gubbins/3.1.4;',
             'run_gubbins.py', str(Path(input.FASTA).absolute()), f'--threads {threads}'
             # '>&2 echo "Failed while building the tree";',
             # 'exit 1'
         ]))
         command.run(Path(output.GFF).parent)
         if not command.exit_code == 0:
+            print(f'""""{command.stderr}""""')
             if 'Failed while building the tree' in command.stderr:
-                logging.info("Gubbins tree building failed, creating empty output file")
+                logging.warning("Gubbins tree building failed, creating empty output file")
+                Path(output.GFF).touch()
+            elif 'Three or more sequences are required' in command.stderr:
+                logging.warning("Gubbins tree building failed, creating empty output file")
                 Path(output.GFF).touch()
             else:
-                raise RuntimeError(f"Error executing gubbins: {command.stderr}")
+                raise RuntimeError(f"Unknown Error executing gubbins: {command.stderr}")
 
 rule gubbins_to_bed:
     """
@@ -273,7 +270,6 @@ rule gubbins_to_bed:
 
         # Construct the command
         command = Command(' '.join([
-            # 'module load bedtools/2.27.1;',
             f'bedtools sort -i {Path(input.GFF).absolute()} |',
             'bedtools merge -i - |',
             f"sed 's/SEQUENCE/{seq_name}/'",
@@ -347,7 +343,6 @@ rule region_filtering_merge_bed_files:
         BED = 'region_filtering/merged.bed'
     run:
         command = Command(' '.join([
-            # 'module load bedtools/2.27.1;',
             'bedtools', 'multiinter', '-i', *[str(Path(i).absolute()) for i in (input.BED_a, input.BED_b, input.BED_c)],
             f'> {Path(output.BED).absolute()}'
         ]))
@@ -452,8 +447,6 @@ rule region_filtering_remove_snps:
         tempfile = lambda wildcards: Path('region_filtering') / wildcards.key / f'tmp_{wildcards.key}.filtered_reg.vcf.gz'
     shell:
         """
-        # module load bcftools/1.17;
-
         # Compress and index input file
         bcftools view --output-type z {input.VCF_GZ} > {params.tempfile};
         bcftools index -f {params.tempfile};
@@ -564,7 +557,7 @@ rule create_snp_matrix:
     Creates a SNP matrix from the filtered VCF files.
     """
     input:
-        VCF = lambda wildcards: expand(rules.variant_filtering_distance.output.VCF, key=config['input'].keys())
+        VCF = expand(rules.variant_filtering_distance.output.VCF, key=config['input'].keys())
     output:
         FASTA = 'tree/snp_matrix.fasta'
     params:
@@ -647,7 +640,6 @@ rule snp_dists_extract:
         TSV = temporary('tree/distances-unsorted.tsv')
     shell:
         """
-#        module load snp-dists/0.8.2;
         snp-dists {input.FASTA} > {output.TSV};
         """
 
@@ -683,13 +675,21 @@ rule create_report:
     Creates the output report of the workflow.
     """
     input:
+        # Statistics
         TSV_stats = rules.combine_variant_calling_stats.output.TSV,
         TSV_regions = rules.region_filtering_combine_stats.output.TSV,
         TSV_dist = rules.snp_dists_sort.output.TSV,
+        # Tree
         FASTA = rules.create_snp_matrix.output.FASTA,
         NWK = rules.mega_construct_tree.output.NWK,
         PNG = rules.visualize_tree.output.PNG,
-        PNG_regions = rules.region_filtering_plot.output.PNG
+        # Variant calling & filtering
+        VCF = expand(rules.variant_filtering_distance.output.VCF,key=config['input'].keys()),
+        PNG_regions = rules.region_filtering_plot.output.PNG,
+        BED = [
+            rules.region_filtering_collect_low_depth_regions.output.BED,
+            rules.region_filtering_merge_bed_files.output.BED,
+            rules.gubbins_to_bed.output.BED]
     output:
         HTML = Path(config['output']['html'])
     params:
@@ -716,6 +716,18 @@ rule create_report:
         section_tree.copy_files(Path(params.dir_out))
         report.add_html_object(reportutils.create_snp_distances_section(Path(input.TSV_dist)))
         report.add_html_object(reportutils.create_citations_section())
+
+        # Add VCF files to the output report
+        dir_vcf = report.output_dir / 'vcf'
+        dir_vcf.mkdir(exist_ok=True)
+        for name, path_vcf in zip(config['input'].keys(), [Path(x) for x in input.VCF]):
+            shutil.copyfile(path_vcf, dir_vcf / f'{name}.vcf')
+
+        # Add BED files to the output report
+        dir_bed = report.output_dir / 'region_filtering'
+        dir_bed.mkdir(exist_ok=True)
+        for path_bed in [Path(x) for x in input.BED]:
+            shutil.copyfile(path_bed, dir_bed / path_bed.name)
 
         # Save report
         report.save()

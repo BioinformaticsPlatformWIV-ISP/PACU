@@ -7,17 +7,20 @@ Workflow for whole genome sequencing based phylogeny of Illumina and ONT data.
 
 ## INSTALLATION
 
-The ScienSNP dependencies can be installed through Conda or manually.
+```
+git clone https://bioit-git.sciensano.be/bioit-shared/bb_sciensnp.git
+```
 
-```
-git clone https://github.com/
-python sciensnp/run_sciensanp.py --version
-```
+The ScienSNP dependencies can be installed via Conda or manually.
 
 ### CONDA installation
 
+**Tip**: It is recommended to use `mamba` to install the dependencies, but `conda` can also be used.
+
 ```
-mamba create -n environment.yml
+mamba env create -f environment.yml;
+conda activate sciensnp_env;
+python setup.py install;
 ```
 
 ### Manual installation
@@ -33,13 +36,14 @@ The ScienSNP workflow has the following dependencies:
 The corresponding binaries should be in your PATH to run the workflow. 
 Other versions of these tools may work, but have not been tested.
 
-The required python packages are listed in the `requirements.txt` file. 
+The required Python packages are listed in the `requirements.txt` file. 
 Python 3.9 is recommended for a manual installation.
 
 ```
 virtualenv sciensnp_env --python=python3.9
 . sciensnp_env/bin/activate;
 pip install -r requirements.txt 
+python setup.py install;
 ```
 
 ## USAGE
@@ -83,6 +87,33 @@ optional arguments:
                         Image height
   --threads THREADS
   --version             Print version and exit
+```
+
+**Note:** The location of the temporary directory can be changed by setting the `TMPDIR` environment variable.
+
+### Basic usage example
+
+The ScienSNP workflow requires BAM files as input with reads mapped to a reference genome. 
+Illumina data can be provided using the `--ilmn-in` option, ONT data can be provided using the `--ont-in` option.
+
+```
+run_sciensnp.py \
+    --ilmn-in in/ilmn/ \
+    --ont-in in/ont/ \
+    --ref-fasta ref.fasta \
+    --output output/ \
+    --dir-working work/ \
+    --threads 8
+```
+
+## TESTING
+
+A test dataset is available under `resources/testdata/bam`, these files contain *E. coli* reads mapped to a small part 
+of the *E. coli* NC_002695.2 genome. This is a not a real dataset, and should only be used for testing.
+
+The complete workflow can be tested using the following command:
+```
+pytest --log-cli-level=DEBUG sciensnp/tests/test_workflow.py
 ```
 
 ## CITATION

@@ -6,7 +6,6 @@ from pathlib import Path
 from Bio import SeqIO
 
 from sciensnp.app.utils import snpmatrixutils
-from sciensnp.config import config
 
 
 class TestSNPMatrixUtils(unittest.TestCase):
@@ -20,7 +19,7 @@ class TestSNPMatrixUtils(unittest.TestCase):
         """
         Tests the create_snp_matrix function.
         """
-        with tempfile.TemporaryDirectory(prefix='mega_', dir=config['dir_temp']) as dir_:
+        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
             # Create SNP matrix
             path_out = Path(dir_, 'snp_matrix.fasta')
             snpmatrixutils.create_snp_matrix(

@@ -88,7 +88,6 @@ def run_model_selection(path_fasta: Path, path_out: Path, dir_: Path, branch_swa
 
     # Run MEGA model selection
     command = Command(' '.join([
-        'module load MEGA/10.0.4;',
         'megacc', f'-d {path_fasta}', f'-a {path_config}', f'-o {path_out}'
     ]))
     command.run(path_out.parent)
@@ -178,7 +177,6 @@ def run_tree_building(path_fasta: Path, path_csv: Path, path_out: Path, dir_: Pa
 
     # Run MEGA model selection
     command = Command(' '.join([
-        'module load MEGA/10.0.4;',
         'megacc', f'-d {path_fasta}', f'-a {path_config}', f'-o {path_out}'
     ]))
     command.run(path_out.parent)

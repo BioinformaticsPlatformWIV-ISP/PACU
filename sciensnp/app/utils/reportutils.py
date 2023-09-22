@@ -9,7 +9,6 @@ from upsetplot import plot
 from sciensnp.app.report.htmlcitation import HtmlCitation
 from sciensnp.app.report.htmlelement import HtmlElement
 from sciensnp.app.report.htmlreportsection import HtmlReportSection
-from sciensnp.config import config
 
 
 def create_upsetplot_overlap(data_overlap: pd.DataFrame, png_out: Path) -> None:
@@ -33,7 +32,7 @@ def create_analysis_info_section(config_: Dict[str, Any]) -> HtmlReportSection:
 
     # Analysis info
     section.add_table([
-        ['Analysis date:', datetime.datetime.now().strftime(config['data_format'])],
+        ['Analysis date:', datetime.datetime.now().strftime('%d/%m/%Y - %X')],
         ['Nb. of samples:', str(len(config_['input'].keys()))],
         ['Reference genome:', Path(config_['reference']['fasta']).name],
     ], table_attributes=[('class', 'information')])
@@ -75,6 +74,7 @@ def create_variant_calling_section(path_stats: Path) -> HtmlReportSection:
         {'key': 'nb_variants_filtered', 'header': 'Number of variants (Filtered)', 'fmt': lambda x: f'{x:,}'},
         {'key': 'perc_passed', 'header': '% passing filtering', 'fmt': lambda x: f'{x:.2f}'},
     ]
+    # noinspection PyCallingNonCallable
     section.add_table([
         [col['fmt'](row[col['key']]) if col.get('fmt') is not None else row[col['key']] for col in columns] for
         row in data_vc.to_dict('records')], [c['header'] for c in columns], [('class', 'data')])
@@ -97,6 +97,7 @@ def create_region_filtering_section(path_stats: Path, path_png: Path) -> HtmlRep
         {'key': 'nb_covered_positions', 'header': 'Positions covered', 'fmt': lambda x: f'{x:,}'},
         {'key': 'perc_ref_covered', 'header': '% covered', 'fmt': lambda x: f'{x:.2f}'},
     ]
+    # noinspection PyCallingNonCallable
     section.add_table([
         [col['fmt'](row[col['key']]) if col.get('fmt') is not None else row[col['key']] for col in columns] for
         row in data_regions.to_dict('records')], [c['header'] for c in columns], [('class', 'data')])
