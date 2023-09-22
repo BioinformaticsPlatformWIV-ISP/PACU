@@ -108,8 +108,8 @@ run_sciensnp.py \
 
 ## TESTING
 
-A test dataset is available under `resources/testdata/bam`, these files contain *E. coli* reads mapped to a small part 
-of the *E. coli* NC_002695.2 genome. This is a not a real dataset, and should only be used for testing.
+A test dataset is available under `resources/testdata/bam`, these files contain *Escherichia coli* reads mapped to a 
+small part of the *E. coli* NC_002695.2 genome. This is a not a real dataset, and should only be used for testing.
 
 The complete workflow can be tested using the following command:
 ```

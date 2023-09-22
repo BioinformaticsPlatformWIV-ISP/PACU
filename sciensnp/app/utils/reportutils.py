@@ -1,6 +1,6 @@
 import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 import pandas as pd
 from matplotlib import pyplot
@@ -9,6 +9,7 @@ from upsetplot import plot
 from sciensnp.app.report.htmlcitation import HtmlCitation
 from sciensnp.app.report.htmlelement import HtmlElement
 from sciensnp.app.report.htmlreportsection import HtmlReportSection
+from sciensnp.app.report.htmltablecell import HtmlTableCell
 
 
 def create_upsetplot_overlap(data_overlap: pd.DataFrame, png_out: Path) -> None:
@@ -57,6 +58,62 @@ def create_parameter_section(config_: Dict[str, Any]) -> HtmlReportSection:
         ['Min. depth:', str(config_['filters']['min_depth'])],
         ['Min. SNP quality:', str(config_['filters']['min_qual'])],
     ], table_attributes=[('class', 'information')])
+    return section
+
+
+def __get_colored_cell_depth(value: int) -> HtmlTableCell:
+    """
+    Returns a colored cell for the mapping output.
+    :param value: Depth value
+    :return: Table cell
+    """
+    value_str = f'{value:,}'
+    if value >= 20:
+        color = 'green'
+    elif value < 10:
+        color = 'red'
+    else:
+        color = 'orange'
+    return HtmlTableCell(value_str, color=color)
+
+
+def __get_colored_cell_coverage(value: int) -> HtmlTableCell:
+    """
+    Returns a colored cell for the mapping output.
+    :param value: Coverage value
+    :return: Table cell
+    """
+    value_str = f'{value:.2f}%'
+    if value >= 95:
+        color = 'green'
+    elif value < 90:
+        color = 'red'
+    else:
+        color = 'orange'
+    return HtmlTableCell(value_str, color=color)
+
+
+def create_mapping_section(path_stats: Path) -> HtmlReportSection:
+    """
+    Creates the read mapping section.
+    :param path_stats: Path to the TSV stats file
+    :return: Section
+    """
+    section = HtmlReportSection('Read mapping')
+    data_vc = pd.read_table(path_stats)
+    header = ['Isolate', 'Median  depth', '% covered']
+    section.add_table([[
+        row['key'],
+        __get_colored_cell_depth(row['median_depth']),
+        __get_colored_cell_depth(row['perc_covered']),
+    ] for row in data_vc.to_dict('records')], header, [('class', 'data')])
+    section.add_paragraph(
+        """
+        Datasets with a median depth between 20x-10x are displayed in orange (warning). Datasets with a median depth 
+        <10x are displayed in red and should be re-sequenced. The genome coverage cut-offs are 95% (warning) and 90% 
+        (error).
+        """
+    )
     return section
 
 

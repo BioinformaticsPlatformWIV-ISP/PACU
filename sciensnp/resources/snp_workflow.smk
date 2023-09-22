@@ -59,14 +59,20 @@ rule samtools_depth_combine:
         TSV = lambda wildcards: expand(rules.samtools_depth.output.TSV, key=config['input'].keys())
     output:
         TSV = 'combined/depth_all.tsv'
+    params:
+        names = config['input'].keys()
     run:
-        # Parse input data
-        data_depth_all = pd.DataFrame()
-
+        records_out = []
         # noinspection PyTypeChecker
-        for tsv_file in [Path(x) for x in input.TSV]:
+        for name, tsv_file in zip(params.names, [Path(x) for x in input.TSV]):
             data_depth_isolate = pd.read_table(tsv_file, names=['chr', 'pos', 'depth'])
-            print(data_depth_isolate)
+            records_out.append({
+                'key': name,
+                'median_depth': data_depth_isolate['depth'].median(),
+                'perc_covered': 100 * (sum(data_depth_isolate['depth'] > 0) / len(data_depth_isolate))
+            })
+        data_out = pd.DataFrame(records_out)
+        data_out.to_csv(output.TSV, sep='\t', index=False)
 
 rule variant_calling_bcftools_mpileup:
     """
@@ -677,6 +683,7 @@ rule create_report:
     input:
         # Statistics
         TSV_stats = rules.combine_variant_calling_stats.output.TSV,
+        TSV_depth = rules.samtools_depth_combine.output.TSV,
         TSV_regions = rules.region_filtering_combine_stats.output.TSV,
         TSV_dist = rules.snp_dists_sort.output.TSV,
         # Tree
@@ -706,6 +713,7 @@ rule create_report:
         # Add sections
         report.add_html_object(reportutils.create_analysis_info_section(params.config))
         report.add_html_object(reportutils.create_parameter_section(params.config))
+        report.add_html_object(reportutils.create_mapping_section(Path(input.TSV_depth)))
         report.add_html_object(reportutils.create_variant_calling_section(Path(input.TSV_stats)))
         section_region_filt = reportutils.create_region_filtering_section(
             Path(input.TSV_regions), Path(input.PNG_regions))
