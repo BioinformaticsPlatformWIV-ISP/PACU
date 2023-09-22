@@ -1,0 +1,14 @@
+include README.md
+include sciensnp/resources/figtree_template.txt
+include sciensnp/resources/mega/*.mao
+include sciensnp/resources/snp_workflow.smk
+include sciensnp/resources/style.css
+include sciensnp/resources/testdata/bam/ilmn/*.bai
+include sciensnp/resources/testdata/bam/ilmn/*.bam
+include sciensnp/resources/testdata/bam/ont/*.bai
+include sciensnp/resources/testdata/bam/ont/*.bam
+include sciensnp/resources/testdata/figtree_template.txt
+include sciensnp/resources/testdata/mega/model_selection_output.tsv
+include sciensnp/resources/testdata/phylogeny.nwk
+include sciensnp/resources/testdata/snp_matrix.fasta
+include sciensnp/resources/testdata/vcfs/*.vcf

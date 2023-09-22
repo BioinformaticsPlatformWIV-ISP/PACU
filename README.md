@@ -20,7 +20,7 @@ The ScienSNP dependencies can be installed via Conda or manually.
 ```
 mamba env create -f environment.yml;
 conda activate sciensnp_env;
-python setup.py install;
+pip install .;
 ```
 
 ### Manual installation
@@ -43,7 +43,7 @@ Python 3.9 is recommended for a manual installation.
 virtualenv sciensnp_env --python=python3.9
 . sciensnp_env/bin/activate;
 pip install -r requirements.txt 
-python setup.py install;
+pip install .;
 ```
 
 ## USAGE

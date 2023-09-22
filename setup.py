@@ -21,7 +21,7 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     keywords="nanopore sequencing plotting quality control",
-    packages=find_packages(),
+    packages=find_packages() + ['sciensnp.resources'],
     python_requires=">=3",
     install_requires=[
         # 'PyVCF==0.6.8',
@@ -33,12 +33,26 @@ setup(
         # 'snakemake==7.18.2',
         # 'yattag==1.14.0',
     ],
-    # package_data={"NanoPlot": []},
-    # package_dir={"nanoplot": "nanoplot"},
-    include_package_data=True,
+    package_data={
+        'sciensnp': [
+            'resources/citations/*.json',
+            'resources/figtree_template.txt',
+            'resources/mega/*.mao',
+            'resources/snp_workflow.smk'
+            'resources/style.css',
+            'resources/testdata/bam/ilmn/*.bai',
+            'resources/testdata/bam/ilmn/*.bam',
+            'resources/testdata/bam/ont/*.bai',
+            'resources/testdata/bam/ont/*.bam',
+            'resources/testdata/figtree_template.txt',
+            'resources/testdata/mega/model_selection_output.tsv',
+            'resources/testdata/phylogeny.nwk',
+            'resources/testdata/snp_matrix.fasta',
+            'resources/testdata/vcfs/*.vcf',
+        ]},
     entry_points={
-        "console_scripts": [
-            "ScienSNP=sciensnp.run_sciensnp:main",
+        'console_scripts': [
+            'ScienSNP=sciensnp.run_sciensnp:main',
         ],
     }
 )
