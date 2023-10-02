@@ -46,6 +46,8 @@ pip install -r requirements.txt
 pip install .;
 ```
 
+Note: Make sure you are in the directory containing the `setup.py` script when running the `pip install` command.
+
 ## USAGE
 
 ```
