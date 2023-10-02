@@ -2,7 +2,7 @@ import logging
 import shutil
 from importlib.resources import files
 from pathlib import Path
-
+import json
 import pandas as pd
 import vcf
 
@@ -41,8 +41,6 @@ rule samtools_depth_parse:
     params:
         key = lambda wildcards: wildcards.key
     run:
-        import json
-
         data_depth = pd.read_table(input.TSV,  names=['chr', 'pos', 'depth'])
         with open(output.JSON, 'w') as handle:
             json.dump({
@@ -522,8 +520,6 @@ rule collect_variant_calling_stats:
     params:
         key = lambda wildcards: wildcards.key
     run:
-        import json
-
         # noinspection PyTypeChecker
         with open(input.VCF) as handle:
             vcf_records = list(vcf.Reader(handle))
@@ -544,8 +540,6 @@ rule combine_variant_calling_stats:
     output:
         TSV = 'stats/stats_filtering.tsv'
     run:
-        import json
-
         records_out = []
         # noinspection PyTypeChecker
         for json_stats, json_depth in zip([Path(x) for x in input.JSON], [Path(x) for x in input.JSON_depth]):
@@ -583,7 +577,8 @@ rule mega_model_selection:
     input:
         FASTA = rules.create_snp_matrix.output.FASTA
     output:
-        CSV = 'tree/model_selection.csv'
+        CSV = 'tree/mega/model_selection.csv',
+        JSON = 'tree/mega/model_selection.json'
     params:
         branch_swap_filter = 'Very weak',
         missing_data_treatment= 'partial_deletion',
@@ -591,6 +586,8 @@ rule mega_model_selection:
     threads: 8
     run:
         from sciensnp.app.utils import megautils
+
+        # Run model selection
         megautils.run_model_selection(
             path_fasta=Path(input.FASTA).absolute(),
             path_out=Path(output.CSV).absolute(),
@@ -600,6 +597,11 @@ rule mega_model_selection:
             site_cov_cutoff=params.site_cov_cutoff,
             threads=threads
         )
+
+        # Extract model name
+        model_info = megautils.parse_model_selection_csv(Path(output.CSV).absolute())
+        with open(output.JSON, 'w') as handle:
+            json.dump({'model': model_info['model']}, handle, indent=2)
 
 rule mega_construct_tree:
     """
@@ -643,13 +645,22 @@ rule iqtree_construct_tree:
     input:
         FASTA = rules.create_snp_matrix.output.FASTA
     output:
-        NWK = 'tree/iqtree/phylogeny.nwk'
+        NWK = 'tree/iqtree/phylogeny.nwk',
+        JSON = 'tree/iqtree/model.json'
     params:
         bootstrap_replicates = 100
     threads: 8
     run:
         from sciensnp.app.utils import iqtreeutils
-        iqtreeutils.run_ml_tree_construction(Path(input.FASTA).absolute(), Path(output.NWK).absolute(), threads)
+
+        # Construct tree
+        command = iqtreeutils.run_ml_tree_construction(
+            Path(input.FASTA).absolute(), Path(output.NWK).absolute(), threads)
+
+        # Extract selected model
+        model = iqtreeutils.extract_selected_model(command.stdout)
+        with open(output.JSON, 'w') as handle:
+            json.dump({'model': model}, handle, indent=2)
 
 rule select_tree:
     """
@@ -657,12 +668,16 @@ rule select_tree:
     """
     input:
         NWK = rules.mega_construct_tree.output.NWK if config.get('phylogeny_method') == 'mega' else
-            rules.iqtree_construct_tree.output.NWK
+            rules.iqtree_construct_tree.output.NWK,
+        JSON = rules.mega_model_selection.output.JSON if config.get('phylogeny_method') == 'mega' else
+            rules.iqtree_construct_tree.output.JSON
     output:
-        NWK = 'tree/phylogeny.nwk'
+        NWK = 'tree/phylogeny.nwk',
+        JSON = 'tree/model.json'
     shell:
         """
         cp {input.NWK} {output.NWK};
+        cp {input.JSON} {output.JSON};
         """
 
 rule snp_dists_extract:
@@ -718,6 +733,7 @@ rule create_report:
         # Tree
         FASTA = rules.create_snp_matrix.output.FASTA,
         NWK = rules.select_tree.output.NWK,
+        JSON = rules.select_tree.output.JSON,
         PNG = rules.visualize_tree.output.PNG,
         # Variant calling & filtering
         VCF = expand(rules.variant_filtering_distance.output.VCF,key=config['input'].keys()),
@@ -748,7 +764,9 @@ rule create_report:
             Path(input.TSV_regions), Path(input.PNG_regions))
         report.add_html_object(section_region_filt)
         section_region_filt.copy_files(Path(params.dir_out))
-        section_tree = reportutils.create_tree_section(Path(input.NWK), Path(input.PNG), Path(input.FASTA))
+        with open(input.JSON) as handle:
+            model = json.load(handle)['model']
+        section_tree = reportutils.create_tree_section(Path(input.NWK), Path(input.PNG), Path(input.FASTA), model)
         report.add_html_object(section_tree)
         section_tree.copy_files(Path(params.dir_out))
         report.add_html_object(reportutils.create_snp_distances_section(Path(input.TSV_dist)))

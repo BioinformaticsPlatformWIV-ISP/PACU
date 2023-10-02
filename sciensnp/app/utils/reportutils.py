@@ -170,12 +170,13 @@ def create_region_filtering_section(path_stats: Path, path_png: Path) -> HtmlRep
     return section
 
 
-def create_tree_section(path_nwk: Path, path_png: Path, path_snp_matrix: Path) -> HtmlReportSection:
+def create_tree_section(path_nwk: Path, path_png: Path, path_snp_matrix: Path, model_name: str) -> HtmlReportSection:
     """
     Creates the section with the visualization of the tree.
     :param path_nwk: Newick tree
     :param path_png: Tree visualization
     :param path_snp_matrix: SNP matrix
+    :param model_name: Name of the model used
     :return: Section
     """
     section = HtmlReportSection('Phylogeny')
@@ -188,6 +189,7 @@ def create_tree_section(path_nwk: Path, path_png: Path, path_snp_matrix: Path) -
 
     # Add visualization
     section.add_header('Tree', 4)
+    section.add_paragraph(f'Selected model: {model_name}')
     relative_path_png = Path(path_png.name)
     section.add_html_object(HtmlElement('img', attributes=[('src', str(relative_path_png)), ('border', '1')]))
     section.add_file(path_png, relative_path_png)
