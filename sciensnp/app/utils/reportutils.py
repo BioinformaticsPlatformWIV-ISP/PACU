@@ -6,6 +6,7 @@ import pandas as pd
 from matplotlib import pyplot
 from upsetplot import plot
 
+from sciensnp import version
 from sciensnp.app.report.htmlcitation import HtmlCitation
 from sciensnp.app.report.htmlelement import HtmlElement
 from sciensnp.app.report.htmlreportsection import HtmlReportSection
@@ -33,9 +34,9 @@ def create_analysis_info_section(config_: Dict[str, Any]) -> HtmlReportSection:
 
     # Analysis info
     section.add_table([
+        ['Workflow version:', version.__version__],
         ['Analysis date:', datetime.datetime.now().strftime('%d/%m/%Y - %X')],
         ['Nb. of samples:', str(len(config_['input'].keys()))],
-        ['Reference genome:', Path(config_['reference']['fasta']).name],
         ['Phylogenetic method:', config_.get('phylogeny_method', 'iqtree')],
     ], table_attributes=[('class', 'information')])
 
@@ -94,15 +95,17 @@ def __get_colored_cell_coverage(value: int) -> HtmlTableCell:
     return HtmlTableCell(value_str, color=color)
 
 
-def create_mapping_section(path_stats: Path) -> HtmlReportSection:
+def create_mapping_section(path_stats: Path, path_ref: Path) -> HtmlReportSection:
     """
     Creates the read mapping section.
     :param path_stats: Path to the TSV stats file
+    :param path_ref: Path to reference genome
     :return: Section
     """
     section = HtmlReportSection('Read mapping')
     data_vc = pd.read_table(path_stats)
     header = ['Isolate', 'Median  depth', '% covered']
+    section.add_paragraph(f'Reference genome: {path_ref.name}')
     section.add_table([[
         row['key'],
         __get_colored_cell_depth(row['median_depth']),

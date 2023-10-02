@@ -742,7 +742,7 @@ rule create_report:
         # Add sections
         report.add_html_object(reportutils.create_analysis_info_section(params.config))
         report.add_html_object(reportutils.create_parameter_section(params.config))
-        report.add_html_object(reportutils.create_mapping_section(Path(input.TSV_depth)))
+        report.add_html_object(reportutils.create_mapping_section(Path(input.TSV_depth), Path(input.FASTA)))
         report.add_html_object(reportutils.create_variant_calling_section(Path(input.TSV_stats)))
         section_region_filt = reportutils.create_region_filtering_section(
             Path(input.TSV_regions), Path(input.PNG_regions))
