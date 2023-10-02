@@ -1,7 +1,7 @@
 # ScienSNP
-Workflow for whole genome sequencing based phylogeny of Illumina and ONT data.
+Workflow for whole genome sequencing based phylogeny of Illumina and ONT R9/R10 data.
 
-### ScienSNP is also available on our public [Galaxy instance](https://galaxy.sciensano.be/).
+### ScienSNP is also available on our public [Galaxy instance](https://galaxy.sciensano.be/) (registration required).
 
 ----
 
