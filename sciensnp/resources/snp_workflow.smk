@@ -609,7 +609,7 @@ rule mega_construct_tree:
         FASTA = rules.create_snp_matrix.output.FASTA,
         CSV = rules.mega_model_selection.output.CSV
     output:
-        NWK = 'tree/phylogeny.nwk'
+        NWK = 'tree/mega/phylogeny.nwk'
     params:
         branch_swap_filter = 'Very weak',
         missing_data_treatment = 'partial_deletion',
@@ -636,6 +636,35 @@ rule mega_construct_tree:
             threads=threads
         )
 
+rule iqtree_construct_tree:
+    """
+    Constructs the phylogenetic tree using IQ-TREE.
+    """
+    input:
+        FASTA = rules.create_snp_matrix.output.FASTA
+    output:
+        NWK = 'tree/iqtree/phylogeny.nwk'
+    params:
+        bootstrap_replicates = 100
+    threads: 8
+    run:
+        from sciensnp.app.utils import iqtreeutils
+        iqtreeutils.run_ml_tree_construction(Path(input.FASTA).absolute(), Path(output.NWK).absolute(), threads)
+
+rule select_tree:
+    """
+    Selects the tree based on the configuration.
+    """
+    input:
+        NWK = rules.mega_construct_tree.output.NWK if config.get('phylogeny_method') == 'mega' else
+            rules.iqtree_construct_tree.output.NWK
+    output:
+        NWK = 'tree/phylogeny.nwk'
+    shell:
+        """
+        cp {input.NWK} {output.NWK};
+        """
+
 rule snp_dists_extract:
     """
     Calculates the SNP distances based on the SNP matrix.
@@ -655,7 +684,7 @@ rule snp_dists_sort:
     """
     input:
         TSV = rules.snp_dists_extract.output.TSV,
-        NWK = rules.mega_construct_tree.output.NWK
+        NWK = rules.select_tree.output.NWK
     output:
         TSV = 'tree/distances.tsv'
     run:
@@ -666,7 +695,7 @@ rule visualize_tree:
     Visualizes the tree using FigTree.
     """
     input:
-        NWK = rules.mega_construct_tree.output.NWK
+        NWK = rules.select_tree.output.NWK
     output:
         PNG = 'tree/tree.png'
     params:
@@ -688,7 +717,7 @@ rule create_report:
         TSV_dist = rules.snp_dists_sort.output.TSV,
         # Tree
         FASTA = rules.create_snp_matrix.output.FASTA,
-        NWK = rules.mega_construct_tree.output.NWK,
+        NWK = rules.select_tree.output.NWK,
         PNG = rules.visualize_tree.output.PNG,
         # Variant calling & filtering
         VCF = expand(rules.variant_filtering_distance.output.VCF,key=config['input'].keys()),

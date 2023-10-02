@@ -1,6 +1,6 @@
 import datetime
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 import pandas as pd
 from matplotlib import pyplot
@@ -36,6 +36,7 @@ def create_analysis_info_section(config_: Dict[str, Any]) -> HtmlReportSection:
         ['Analysis date:', datetime.datetime.now().strftime('%d/%m/%Y - %X')],
         ['Nb. of samples:', str(len(config_['input'].keys()))],
         ['Reference genome:', Path(config_['reference']['fasta']).name],
+        ['Phylogenetic method:', config_.get('phylogeny_method', 'iqtree')],
     ], table_attributes=[('class', 'information')])
 
     # Citation disclaimer
@@ -219,7 +220,15 @@ def create_citations_section() -> HtmlReportSection:
     :return: Section
     """
     section = HtmlReportSection('Citations')
-    keys = ['Croucher_2015-gubbins', 'Danecek_2021-bcftools', 'Li_2018-minimap2', 'Quinlan_2010-bedtools']
+    keys = [
+        'Croucher_2015-gubbins',
+        'Danecek_2021-bcftools',
+        'Li_2018-minimap2',
+        'Quinlan_2010-bedtools',
+        'Nguyen_2015-iq_tree',
+        'Kalyaanamoorthy_2017-iq_tree_model',
+        'Kumar_2018-megax'
+    ]
     for citation_key in keys:
         section.add_html_object(HtmlCitation.parse_from_json(citation_key))
     return section

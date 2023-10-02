@@ -8,6 +8,7 @@ dependencies:
   - beautifulsoup4=4.12.2
   - figtree=1.4.4
   - gubbins=3.3.1
+  - iqtree=2.2.5
   - matplotlib-base=3.8.0
   - pandas=2.1.0
   - pyvcf=0.6.8

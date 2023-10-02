@@ -73,7 +73,7 @@ def run_model_selection(path_fasta: Path, path_out: Path, dir_: Path, branch_swa
                         missing_data_treatment: str, site_cov_cutoff: Optional[int], threads: int = 4) -> None:
     """
     Runs model selection on the given SNP matrix.
-    :param path_fasta: Input FASTA file
+    :param path_fasta: Input SNP matrix FASTA file
     :param path_out: Output path
     :param dir_: Working directory
     :param branch_swap_filter: Branch swap filter option

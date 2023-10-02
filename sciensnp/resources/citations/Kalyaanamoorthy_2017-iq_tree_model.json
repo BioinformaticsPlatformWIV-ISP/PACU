@@ -1,0 +1,20 @@
+{
+  "type_of_reference": "JOUR",
+  "primary_title": "ModelFinder: Fast model selection for accurate phylogenetic estimates",
+  "first_authors": [
+    "Kalyaanamoorthy, Subha",
+    "Minh, Bui Quang",
+    "Wong, Thomas K.F.",
+    "Von Haeseler, Arndt",
+    "Jermiin, Lars S."
+  ],
+  "publication_year": "2017///",
+  "alternate_title3": "Nature Methods",
+  "volume": "14",
+  "number": "6",
+  "start_page": "587",
+  "end_page": "589",
+  "doi": "10.1038/nmeth.4285",
+  "file_attachments1": "file:///D:/articles/Kalyaanamoorthy et al._2017_ModelFinder Fast model selection for accurate phylogenetic estimates.pdf",
+  "abstract": "Model-based molecular phylogenetics plays an important role in comparisons of genomic data, and model selection is a key step in all such analyses. We present ModelFinder, a fast model-selection method that greatly improves the accuracy of phylogenetic estimates by incorporating a model of rate heterogeneity across sites not previously considered in this context and by allowing concurrent searches of model space and tree space."
+}

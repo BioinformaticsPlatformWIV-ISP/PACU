@@ -48,24 +48,20 @@ class ScienSNP(object):
         :return: Parsed arguments.
         """
         parser = argparse.ArgumentParser()
+
+        # Input and output
         parser.add_argument('--ilmn-in', help='Directory with Illumina input BAM files')
         parser.add_argument('--ont-in', help='Directory with ONT input BAM files')
         parser.add_argument('--ref-fasta', required=True, help='Reference FASTA file', type=Path)
         parser.add_argument('--ref-bed', type=Path, help='BED file with phage regions')
         parser.add_argument(
             '--dir-working', type=Path, help='Working directory', default=Path.cwd())
-
-        # Output
         parser.add_argument('--output', required=True, type=Path, help='Output directory')
 
-        # Dependencies (TO CHECK!)
-        # parser.add_argument('--conda-root', help='Directory of the CONDA installation', required=True)
-        # parser.add_argument('--clair3-root', help='Directory of the Clair3 installation', required=True)
-        # parser.add_argument('--gubbins-root', help='Directory of the Gubbins installation', required=True)
-        # parser.add_argument('--gubbins-env', help='Gubbins virtual environment', required=True)
-
         # Parameters
-        parser.add_argument('--calling-method', choices=['clair3', 'samtools'], default='clair3')
+        parser.add_argument(
+            '--use-mega', action='store_true',
+            help='If set, MEGA is used for the construction of the phylogeny (instead of IQ-TREE)')
         parser.add_argument(
             '--include-ref', action='store_true', help='If set, the reference genome is included in the phylogeny')
         parser.add_argument('--min-snp-af', type=float, default=0.90, help='Minimum allele frequency for variants')
@@ -109,7 +105,6 @@ class ScienSNP(object):
                 f'No input datasets found (searched in Illumina={self._args.ilmn_in}, ONT={self._args.ont_in})')
 
         config_data = {
-            'calling_method': self._args.calling_method,
             'depth': {
                 'min_mq': self._args.min_mq_depth,
                 'min_depth': 5
@@ -126,6 +121,7 @@ class ScienSNP(object):
             },
             'include_ref': self._args.include_ref,
             'input': input_dict,
+            'phylogeny_method': 'mega' if self._args.use_mega else 'iqtree',
             'output': {
                 'html': str(self._args.output.absolute() / 'report.html'),
                 'dir': str(self._args.output.absolute())
@@ -148,8 +144,13 @@ class ScienSNP(object):
             'bedtools': 'bedtools --version',
             'gubbins': 'ml gubbins; gubbins -h',
             'snp-dists': 'snp-dists -v',
-            'figtree': 'figtree -help'
+            'figtree': 'figtree -help',
+
         }
+        if self._args.use_mega:
+            commands['MEGA'] = 'megacc --version'
+        else:
+            commands['IQ-TREE'] = 'iqtree2 --version'
         logger.info(f'Checking dependencies')
         for tool, command in commands.items():
             command = Command(command)
