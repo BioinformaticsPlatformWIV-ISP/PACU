@@ -209,3 +209,15 @@ def plot_newick_phylogeny(path_nwk: Path, path_out: Path, width: int = 600, heig
         if not command.exit_code == 0:
             raise RuntimeError(f"Error visualizing tree: {command.stderr}")
         logger.info(f'Visualization exported to: {path_out}')
+
+
+def sanitize_bam_input(name: str) -> str:
+    """
+    Sanitizes the BAM input file name.
+    :param name: Name
+    :return: None
+    """
+    invalid_chars = '/!@#$'
+    if not name.endswith('.bam'):
+        return f'{name}.bam'
+    return ''.join(c for c in name if c not in invalid_chars)
