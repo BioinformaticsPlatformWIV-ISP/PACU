@@ -752,6 +752,8 @@ rule create_report:
 
         # Initialize report
         report = HtmlReport(Path(output.HTML), Path(params.dir_out))
+        if not Path(params.dir_out).exists():
+            Path(params.dir_out).mkdir(parents=True)
         report.initialize('ScienSNP report', Path(str(files('sciensnp').joinpath('resources/style.css'))))
         report.add_pipeline_header('ScienSNP')
 

@@ -1,5 +1,6 @@
 PyVCF==0.6.8
 PyYAML==6.0
+UpSetPlot==0.8.0
 beautifulsoup4==4.11.1
 biopython==1.79
 matplotlib==3.7.1

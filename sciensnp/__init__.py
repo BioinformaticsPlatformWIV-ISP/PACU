@@ -21,6 +21,7 @@ class ScienSNP(object):
         :return: None
         """
         self._args = ScienSNP._parse_arguments(args)
+        self._path_html_out = self._args.output.absolute() / self._args.output_html
 
     def run(self) -> None:
         """
@@ -30,14 +31,14 @@ class ScienSNP(object):
         logger.info('Starting ScienSNP workflow')
         self._check_dependencies()
         path_snakefile = Path(str(files('sciensnp').joinpath('resources/snp_workflow.smk')))
-        targets = [self._args.output.absolute() / 'report.html']
         if self._args.ref_bed is None:
             path_bed = self._args.dir_working / 'empty_phages.bed'
             path_bed.touch()
             logger.info(f'Creating empty phage BED file: {path_bed}')
             self._args.ref_bed = path_bed
         path_config = self.__create_config_file()
-        snakemakeutils.run_snakemake(path_snakefile, path_config, targets, self._args.dir_working, self._args.threads)
+        snakemakeutils.run_snakemake(
+            path_snakefile, path_config, [self._path_html_out], self._args.dir_working, self._args.threads)
         logger.info(f'Workflow finished successfully, output available in: {self._args.output}')
 
     @staticmethod
@@ -57,6 +58,7 @@ class ScienSNP(object):
         parser.add_argument(
             '--dir-working', type=Path, help='Working directory', default=Path.cwd())
         parser.add_argument('--output', required=True, type=Path, help='Output directory')
+        parser.add_argument('--output-html', type=Path, help='Output report name', default='report.html')
 
         # Parameters
         parser.add_argument(
@@ -123,7 +125,7 @@ class ScienSNP(object):
             'input': input_dict,
             'phylogeny_method': 'mega' if self._args.use_mega else 'iqtree',
             'output': {
-                'html': str(self._args.output.absolute() / 'report.html'),
+                'html': str(self._path_html_out),
                 'dir': str(self._args.output.absolute())
             },
             'reference': {

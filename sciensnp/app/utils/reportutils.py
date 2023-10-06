@@ -109,7 +109,7 @@ def create_mapping_section(path_stats: Path, path_ref: Path) -> HtmlReportSectio
     section.add_table([[
         row['key'],
         __get_colored_cell_depth(row['median_depth']),
-        __get_colored_cell_depth(row['perc_covered']),
+        __get_colored_cell_coverage(row['perc_covered']),
     ] for row in data_vc.to_dict('records')], header, [('class', 'data')])
     section.add_paragraph(
         """
