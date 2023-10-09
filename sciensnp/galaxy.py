@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # Symlink the BAM files (ONT)
     if args.bam_ont is not None:
-        logger.info(f'Creating symlinks for ont input ({len(args.bam_ont)} datasets)')
+        logger.info(f'Creating symlinks for ONT input ({len(args.bam_ont)} datasets)')
         dir_bam = dir_in / 'bam_ont'
         dir_bam.mkdir(exist_ok=True)
         for path, name in args.bam_ont:

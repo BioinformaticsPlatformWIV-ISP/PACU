@@ -22,6 +22,8 @@ class ScienSNP(object):
         """
         self._args = ScienSNP._parse_arguments(args)
         self._path_html_out = self._args.output.absolute() / self._args.output_html
+        if self._path_html_out.exists():
+            self._path_html_out.unlink()
 
     def run(self) -> None:
         """
