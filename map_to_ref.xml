@@ -1,0 +1,52 @@
+<tool id="sciensnp_map" name="ScienSNP - mapping" version="0.1">
+    <description>
+        Helper tool to map ONT / Illumina reads to a reference genome for the ScienSNP workflow
+    </description>
+    <command>
+        <![CDATA[
+        $__tool_directory__/run_mapper.sh
+
+        ## FASTA input
+        --ref-fasta $reference
+        --ref-fasta-name "$reference.name"
+
+        ## FASTQ input
+        --data-type $fastq_tech.fastq_tech_selector
+        #if str($fastq_tech.fastq_tech_selector) == 'illumina':
+            --fastq-illumina $fastq_tech.fastq_illumina_1 $fastq_tech.fastq_illumina_2
+            --fastq-illumina-names "$fastq_tech.fastq_illumina_1.name" "$fastq_tech.fastq_illumina_2.name"
+        #elif str($fastq_tech.fastq_tech_selector) == 'ont':
+            --fastq-ont $fastq_tech.fastq_ont
+            --fastq-ont-name "$fastq_tech.fastq_ont.name"
+        #end if
+
+        ## Output
+        --output $bam
+
+        ## Other options
+        --threads 4
+        ]]>
+    </command>
+    <inputs>
+        <param name="reference" type="data" format="fasta" label="Reference genome"/>
+        <conditional name="fastq_tech">
+            <param name="fastq_tech_selector" type="select" label="FASTQ type">
+                <option value="illumina">Illumina paired-end reads</option>
+                <option value="ont">ONT single-end reads</option>
+            </param>
+            <when value="illumina">
+                <param name="fastq_illumina_1" type="data" format="fastq,fastqsanger.gz" label="Forward reads"/>
+                <param name="fastq_illumina_2" type="data" format="fastq,fastqsanger.gz" label="Reverse reads"/>
+            </when>
+            <when value="ont">
+                <param name="fastq_ont" type="data" format="fastq,fastqsanger.gz" label="ONT reads"/>
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data name="bam" format="bam" label="Mapping on ${on_string}"/>
+    </outputs>
+    <stdio>
+        <exit_code range="1:" level="fatal"/>
+    </stdio>
+</tool>

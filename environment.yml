@@ -6,10 +6,12 @@ channels:
 dependencies:
   - bcftools=1.17
   - beautifulsoup4=4.12.2
+  - bowtie2=2.5.1
   - figtree=1.4.4
   - gubbins=3.3.1
   - iqtree=2.2.5
   - matplotlib-base=3.8.0
+  - minimap2=2.26
   - pandas=2.1.0
   - pyvcf=0.6.8
   - samtools=1.17

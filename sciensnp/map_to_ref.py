@@ -23,15 +23,14 @@ class MapToRef(object):
         Runs the main script.
         :return: None
         """
-        logger.info('Starting mapping helper')
+        logger.info(f'Starting mapping helper ({self._args.read_type})')
         self._check_dependencies()
-        if self._args.data_type == 'illumina':
+        if self._args.read_type == 'illumina':
             path_ref = self._illumina_idx_ref()
             self._map_illumina(path_ref, self._args.output)
         else:
             path_ref = self._ont_idx_ref()
             self._map_ont(path_ref, self._args.output)
-            logger.info('Running ONT mapping')
 
     @property
     def ref_name(self) -> str:
@@ -97,12 +96,13 @@ class MapToRef(object):
         """
         dir_idx = self._args.dir_working / 'mm2_idx'
         path_ref_link = self.__symlink_ref_fasta(dir_idx)
-        command = Command(f'minimap2 -x map-ont -d {path_ref_link} {self._args.ref_fasta}')
+        path_mni = path_ref_link.parent / f'{path_ref_link.name}.mni'
+        command = Command(f'minimap2 -x map-ont -d {path_mni} {path_ref_link}')
         command.run(dir_idx)
         if not command.exit_code == 0:
             raise RuntimeError(f'Error creating minimap2 index: {command.stderr}')
         logger.info(f'Minimap2 index created in: {dir_idx}')
-        return path_ref_link
+        return path_mni
 
     def _map_ont(self, path_ref: Path, path_out: Path) -> None:
         """
@@ -131,7 +131,7 @@ class MapToRef(object):
         """
         parser = argparse.ArgumentParser()
         # FASTQ input
-        parser.add_argument('--data-type', choices=['ont', 'illumina'], required=True)
+        parser.add_argument('--read-type', choices=['ont', 'illumina'], required=True)
         parser.add_argument('--fastq-ont', type=Path)
         parser.add_argument('--fastq-ont-name', type=str, help='Original FASTQ name (used for Galaxy)')
         parser.add_argument('--fastq-illumina', type=Path, nargs=2)

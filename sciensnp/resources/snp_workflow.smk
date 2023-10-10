@@ -239,14 +239,9 @@ rule gubbins_run:
             logging.info(f'Running Gubbins on {len(all_seqs)} sequences')
 
         # Run Gubbins
-        command = Command(' '.join([
-            'run_gubbins.py', str(Path(input.FASTA).absolute()), f'--threads {threads}'
-            # '>&2 echo "Failed while building the tree";',
-            # 'exit 1'
-        ]))
+        command = Command(' '.join(['run_gubbins.py', str(Path(input.FASTA).absolute()), f'--threads {threads}']))
         command.run(Path(output.GFF).parent)
         if not command.exit_code == 0:
-            print(f'""""{command.stderr}""""')
             if 'Failed while building the tree' in command.stderr:
                 logging.warning("Gubbins tree building failed, creating empty output file")
                 Path(output.GFF).touch()

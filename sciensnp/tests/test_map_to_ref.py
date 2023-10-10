@@ -20,7 +20,7 @@ class TestMapToRef(unittest.TestCase):
             path_out = Path(dir_, 'mapped_reads.bam')
             map_to_ref = MapToRef([
                 '--ref-fasta', str(files('sciensnp').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
-                '--data-type', 'illumina',
+                '--read-type', 'illumina',
                 '--fastq-illumina',
                 str(files('sciensnp').joinpath('resources/testdata/fastq/TIAC1151_1P.fastq.gz')),
                 str(files('sciensnp').joinpath('resources/testdata/fastq/TIAC1151_2P.fastq.gz')),
@@ -43,7 +43,7 @@ class TestMapToRef(unittest.TestCase):
             path_out = Path(dir_, 'mapped_reads.bam')
             map_to_ref = MapToRef([
                 '--ref-fasta', str(files('sciensnp').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
-                '--data-type', 'ont',
+                '--read-type', 'ont',
                 '--fastq-ont',
                 str(files('sciensnp').joinpath('resources/testdata/fastq/TIAC1151-ont.gz')),
                 '--output', str(path_out),

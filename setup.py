@@ -44,11 +44,12 @@ setup(
             'resources/testdata/bam/ilmn/*.bam',
             'resources/testdata/bam/ont/*.bai',
             'resources/testdata/bam/ont/*.bam',
-            'resources/testdata/figtree_template.txt',
-            'resources/testdata/mega/model_selection_output.tsv',
+            'resources/testdata/fastq/*.fastq.gz',
+            'resources/testdata/mega/model_selection_output.csv',
+            'resources/testdata/vcfs/*.vcf',
+            'resources/testdata/NC_002695.2-subset.fasta',
             'resources/testdata/phylogeny.nwk',
             'resources/testdata/snp_matrix.fasta',
-            'resources/testdata/vcfs/*.vcf',
         ]},
     entry_points={
         'console_scripts': [

@@ -6,9 +6,9 @@ from pathlib import Path
 from sciensnp.app.utils import iqtreeutils
 
 
-class TestMEGAUtils(unittest.TestCase):
+class TestIqTreeUtils(unittest.TestCase):
     """
-    Tests for the MEGA utils.
+    Tests for the IQ-TREE utils.
     """
 
     path_fasta = Path(str(files('sciensnp').joinpath('resources/testdata/snp_matrix.fasta')))
@@ -20,7 +20,7 @@ class TestMEGAUtils(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
             path_out_nwk = Path(dir_, 'iqtree.nwk')
             command = iqtreeutils.run_ml_tree_construction(
-                path_fasta=TestMEGAUtils.path_fasta,
+                path_fasta=TestIqTreeUtils.path_fasta,
                 path_out=path_out_nwk,
                 threads=4
             )
