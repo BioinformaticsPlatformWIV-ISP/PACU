@@ -29,15 +29,20 @@ The ScienSNP workflow has the following dependencies:
 - [BEDTools 2.27.1](https://github.com/arq5x/bedtools2/releases/tag/v2.27.1)
 - [bcftools 1.17](https://github.com/samtools/bcftools/releases/tag/1.17)
 - [FigTree 1.4.4](http://tree.bio.ed.ac.uk/software/figtree/)
-- [MEGA 10.0.4](https://www.megasoftware.net/)
 - [samtools 1.17](https://github.com/samtools/samtools/releases/tag/1.17)
 - [snpdists 0.8.2](https://github.com/tseemann/snp-dists)
+- [MEGA 10.0.4](https://www.megasoftware.net/)
+- [IQ-Tree 2.2.5](https://github.com/iqtree/iqtree2)
+
+The mapping script has the following additional dependencies:
+- [Bowtie2 2.5.1](https://github.com/BenLangmead/bowtie2)
+- [Minimap2 2.26](https://github.com/lh3/minimap2)
 
 The corresponding binaries should be in your PATH to run the workflow. 
 Other versions of these tools may work, but have not been tested.
 
 The required Python packages are listed in the `requirements.txt` file. 
-Python 3.9 is recommended for a manual installation.
+Python 3.9 or 3.10 is recommended for a manual installation.
 
 ```
 virtualenv sciensnp_env --python=python3.9
@@ -106,6 +111,30 @@ run_sciensnp.py \
     --output output/ \
     --dir-working work/ \
     --threads 8
+```
+
+### Read mapping
+
+A script is included to map reads to a reference genome in FASTA format for both ONT and Illumina data.
+The resulting BAM files can be used as input for the SNP workflow.
+
+*Illumina data*
+```
+map_to_ref.py \
+    --ref-fasta genome.fasta \
+    --data-type illumina \
+    --fastq-illumina reads_1.fastq.gz reads_2.fastq.gz \
+    --output mapped.bam \
+    --threads 4
+```
+*ONT data*
+```
+map_to_ref.py \
+    --ref-fasta genome.fasta \
+    --data-type ont \
+    --fastq-ont reads_ont.fastq.gz \
+    --output mapped.bam \
+    --threads 4
 ```
 
 ## TESTING
