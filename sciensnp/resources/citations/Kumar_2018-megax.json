@@ -19,7 +19,5 @@
   "number": "6",
   "start_page": "1547",
   "end_page": "1549",
-  "doi": "10.1093/molbev/msy096",
-  "file_attachments1": "file:///D:/articles/Kumar et al._2018_MEGA X Molecular evolutionary genetics analysis across computing platforms.pdf",
-  "abstract": "The Molecular Evolutionary Genetics Analysis (MEGA) software implements many analytical methods and tools for phylogenomics and phylomedicine. Here, we report a transformation of MEGA to enable cross-platform use on Microsoft Windows and Linux operating systems. MEGA X does not require virtualization or emulation software and provides a uniform user experience across platforms. MEGA X has additionally been upgraded to use multiple computing cores for many molecular evolutionary analyses. MEGA X is available in two interfaces (graphical and command line) and can be downloaded from www.megasoftware.net free of charge."
+  "doi": "10.1093/molbev/msy096"
 }
