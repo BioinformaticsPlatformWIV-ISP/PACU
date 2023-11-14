@@ -141,7 +141,7 @@ def __create_config_file_tree_construction(
     logger.info(f'Template parsed')
 
     # Create filled-in template
-    path_out = dir_ / 'config-model_selection.mao'
+    path_out = dir_ / 'config-tree_building.mao'
     with path_out.open('w') as handle:
         handle.write(template.format(
             bootstrap_replications=bootstrap_replicates,
