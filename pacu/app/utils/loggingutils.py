@@ -1,7 +1,7 @@
 import logging
 
 
-logger = logging.getLogger('sciensnp')
+logger = logging.getLogger('pacu')
 
 
 def initialize_logging() -> None:

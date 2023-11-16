@@ -3,7 +3,7 @@ import unittest
 from importlib.resources import files
 from pathlib import Path
 
-from sciensnp.app.utils import workflowutils
+from pacu.app.utils import workflowutils
 
 
 class TestWorkflowUtils(unittest.TestCase):
@@ -15,8 +15,8 @@ class TestWorkflowUtils(unittest.TestCase):
         """
         Tests the plot_newick_phylogeny function.
         """
-        path_nwk = Path(str(files('sciensnp').joinpath('resources/testdata/phylogeny.nwk')))
-        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
+        path_nwk = Path(str(files('pacu').joinpath('resources/testdata/phylogeny.nwk')))
+        with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
             # Create visualization
             path_out = Path(dir_, 'tree.png')
             workflowutils.plot_newick_phylogeny(path_nwk, path_out)

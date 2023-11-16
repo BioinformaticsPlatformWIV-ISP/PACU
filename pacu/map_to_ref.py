@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 from typing import Sequence, Optional
 
-from sciensnp import initialize_logging, Command, logger
+from pacu import initialize_logging, Command, logger
 
 
 class MapToRef(object):

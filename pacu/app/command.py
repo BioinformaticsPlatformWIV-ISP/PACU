@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 
-from sciensnp.app.utils.loggingutils import logger
+from pacu.app.utils.loggingutils import logger
 
 
 class Command(object):

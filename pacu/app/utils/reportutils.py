@@ -6,11 +6,11 @@ import pandas as pd
 from matplotlib import pyplot
 from upsetplot import plot
 
-from sciensnp import version
-from sciensnp.app.report.htmlcitation import HtmlCitation
-from sciensnp.app.report.htmlelement import HtmlElement
-from sciensnp.app.report.htmlreportsection import HtmlReportSection
-from sciensnp.app.report.htmltablecell import HtmlTableCell
+from pacu import version
+from pacu.app.report.htmlcitation import HtmlCitation
+from pacu.app.report.htmlelement import HtmlElement
+from pacu.app.report.htmlreportsection import HtmlReportSection
+from pacu.app.report.htmltablecell import HtmlTableCell
 
 
 def create_upsetplot_overlap(data_overlap: pd.DataFrame, png_out: Path) -> None:

@@ -8,8 +8,8 @@ import pandas as pd
 import vcf
 from Bio import Phylo
 
-from sciensnp.app.command import Command
-from sciensnp.app.utils.loggingutils import logger
+from pacu.app.command import Command
+from pacu.app.utils.loggingutils import logger
 
 
 def is_new_region(record: pd.Series) -> bool:
@@ -71,7 +71,7 @@ def count_overlap(bed_file_a: Path, bed_file_b: Path) -> int:
     :param bed_file_b: Input bed file B
     :return: Number of overlaps
     """
-    with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_temp:
+    with tempfile.TemporaryDirectory(prefix='pacu') as dir_temp:
         command = Command(' '.join([
             f'bedtools multiinter -i {bed_file_a} {bed_file_b}',
             '|', "awk -F'\t' 'BEGIN{SUM=0}{SUM+=$3-$2 }END{print SUM}'"
@@ -185,12 +185,12 @@ def plot_newick_phylogeny(path_nwk: Path, path_out: Path, width: int = 600, heig
     :param height: Image height
     :return: None
     """
-    with tempfile.NamedTemporaryFile(prefix='sciensnp') as file_:
+    with tempfile.NamedTemporaryFile(prefix='pacu') as file_:
         # Convert tree to Nexus format
         Phylo.convert(str(path_nwk), 'newick', file_.name, 'nexus')
 
         # Add the figtree code
-        path_template = Path(str(files('sciensnp').joinpath('resources/figtree_template.txt')))
+        path_template = Path(str(files('pacu').joinpath('resources/figtree_template.txt')))
         with open(file_.name, 'a') as handle_out, open(path_template) as handle_in:
             handle_out.write('\n')
             for line in handle_in.readlines():

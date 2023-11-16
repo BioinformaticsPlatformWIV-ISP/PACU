@@ -5,8 +5,8 @@ import shutil
 
 from pathlib import Path
 
-from sciensnp.app.report.htmlbase import HtmlBase
-from sciensnp.app.report.htmlelement import HtmlElement
+from pacu.app.report.htmlbase import HtmlBase
+from pacu.app.report.htmlelement import HtmlElement
 
 
 class HtmlReport(HtmlBase):

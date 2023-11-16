@@ -1,4 +1,4 @@
-from sciensnp.app.report.htmlelement import HtmlElement
+from pacu.app.report.htmlelement import HtmlElement
 
 
 class HtmlTableCell(HtmlElement):

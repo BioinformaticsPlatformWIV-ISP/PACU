@@ -6,10 +6,10 @@ import json
 import pandas as pd
 import vcf
 
-from sciensnp.app.command import Command
-from sciensnp.app.report.htmlreport import HtmlReport
-from sciensnp.app.utils import workflowutils
-from sciensnp.app.utils.loggingutils import initialize_logging
+from pacu.app.command import Command
+from pacu.app.report.htmlreport import HtmlReport
+from pacu.app.utils import workflowutils
+from pacu.app.utils.loggingutils import initialize_logging
 
 initialize_logging()
 
@@ -363,7 +363,7 @@ rule region_filtering_plot:
         TSV = 'stats/filtered_positions.tsv'
     run:
         from Bio import SeqIO
-        from sciensnp.app.utils import reportutils
+        from pacu.app.utils import reportutils
 
         # Get the size of the reference genome
         with open(input.FASTA) as handle:
@@ -559,7 +559,7 @@ rule create_snp_matrix:
         include_ref = False,
         names = list(config['input'].keys())
     run:
-        from sciensnp.app.utils import snpmatrixutils
+        from pacu.app.utils import snpmatrixutils
 
         # noinspection PyTypeChecker
         snpmatrixutils.create_snp_matrix(
@@ -580,7 +580,7 @@ rule mega_model_selection:
         site_cov_cutoff=50
     threads: 8
     run:
-        from sciensnp.app.utils import megautils
+        from pacu.app.utils import megautils
 
         # Run model selection
         megautils.run_model_selection(
@@ -617,7 +617,7 @@ rule mega_construct_tree:
         gamma_categories = 5
     threads: 8
     run:
-        from sciensnp.app.utils import megautils
+        from pacu.app.utils import megautils
         megautils.run_tree_building(
             path_fasta=Path(input.FASTA).absolute(),
             path_csv=Path(input.CSV).absolute(),
@@ -646,7 +646,7 @@ rule iqtree_construct_tree:
         bootstrap_replicates = 100
     threads: 8
     run:
-        from sciensnp.app.utils import iqtreeutils
+        from pacu.app.utils import iqtreeutils
 
         # Construct tree
         command = iqtreeutils.run_ml_tree_construction(
@@ -743,14 +743,14 @@ rule create_report:
         dir_out = Path(config['output']['dir']),
         config = config
     run:
-        from sciensnp.app.utils import reportutils
+        from pacu.app.utils import reportutils
 
         # Initialize report
         report = HtmlReport(Path(output.HTML), Path(params.dir_out))
         if not Path(params.dir_out).exists():
             Path(params.dir_out).mkdir(parents=True)
-        report.initialize('ScienSNP report', Path(str(files('sciensnp').joinpath('resources/style.css'))))
-        report.add_pipeline_header('ScienSNP')
+        report.initialize('PACU report', Path(str(files('pacu').joinpath('resources/style.css'))))
+        report.add_pipeline_header('PACU')
 
         # Add sections
         report.add_html_object(reportutils.create_analysis_info_section(params.config))

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from Bio import SeqIO
 
-from sciensnp.app.utils import snpmatrixutils
+from pacu.app.utils import snpmatrixutils
 
 
 class TestSNPMatrixUtils(unittest.TestCase):
@@ -13,13 +13,13 @@ class TestSNPMatrixUtils(unittest.TestCase):
     Tests for the SNP matrix utils.
     """
 
-    paths_vcf = [p for p in Path(str(files('sciensnp').joinpath('resources/testdata/vcfs'))).glob('*.vcf')]
+    paths_vcf = [p for p in Path(str(files('pacu').joinpath('resources/testdata/vcfs'))).glob('*.vcf')]
 
     def test_create_snp_matrix(self) -> None:
         """
         Tests the create_snp_matrix function.
         """
-        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
+        with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
             # Create SNP matrix
             path_out = Path(dir_, 'snp_matrix.fasta')
             snpmatrixutils.create_snp_matrix(

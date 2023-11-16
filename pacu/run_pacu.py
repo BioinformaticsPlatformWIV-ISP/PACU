@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from sciensnp import initialize_logging, ScienSNP
+from pacu import initialize_logging, PACU
 
 
 def main() -> None:
@@ -8,7 +8,7 @@ def main() -> None:
     :return: None
     """
     initialize_logging()
-    main_ = ScienSNP()
+    main_ = PACU()
     main_.run()
 
 

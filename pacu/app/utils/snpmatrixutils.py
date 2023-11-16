@@ -9,7 +9,7 @@ from Bio.SeqRecord import SeqRecord
 # noinspection PyProtectedMember
 from vcf.model import _Record as VCFRecord
 
-from sciensnp.app.utils.loggingutils import logger
+from pacu.app.utils.loggingutils import logger
 
 
 @dataclass(unsafe_hash=True, frozen=True)

@@ -3,15 +3,15 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Optional, Sequence
 
-from sciensnp.app.command import Command
-from sciensnp.app.utils import snakemakeutils
-from sciensnp.app.utils.loggingutils import initialize_logging, logger
+from pacu.app.command import Command
+from pacu.app.utils import snakemakeutils
+from pacu.app.utils.loggingutils import initialize_logging, logger
 from .version import __version__
 
 
-class ScienSNP(object):
+class PACU(object):
     """
-    Main class to run the ScienSNP pipeline.
+    Main class to run the PACU pipeline.
     """
 
     def __init__(self, args: Optional[Sequence[str]] = None) -> None:
@@ -20,7 +20,7 @@ class ScienSNP(object):
         :param args: Arguments (optional)
         :return: None
         """
-        self._args = ScienSNP._parse_arguments(args)
+        self._args = PACU._parse_arguments(args)
         self._path_html_out = self._args.output.absolute() / self._args.output_html
         if self._path_html_out.exists():
             self._path_html_out.unlink()
@@ -30,9 +30,9 @@ class ScienSNP(object):
         Runs the main script.
         :return: None
         """
-        logger.info('Starting ScienSNP workflow')
+        logger.info('Starting PACU workflow')
         self._check_dependencies()
-        path_snakefile = Path(str(files('sciensnp').joinpath('resources/snp_workflow.smk')))
+        path_snakefile = Path(str(files('pacu').joinpath('resources/snp_workflow.smk')))
         if self._args.ref_bed is None:
             path_bed = self._args.dir_working / 'empty_phages.bed'
             path_bed.touch()
@@ -88,7 +88,7 @@ class ScienSNP(object):
         # Threads
         parser.add_argument('--threads', type=int, default=4)
         parser.add_argument(
-            '--version', help='Print version and exit', action='version', version=f'ScienSNP {__version__}')
+            '--version', help='Print version and exit', action='version', version=f'PACU {__version__}')
 
         return parser.parse_args(args)
 

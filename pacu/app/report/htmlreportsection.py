@@ -3,9 +3,9 @@ import shutil
 from pathlib import Path
 from typing import List, Union, Tuple, Optional, Sequence
 
-from sciensnp.app.report.htmlbase import HtmlBase
-from sciensnp.app.report.htmlelement import HtmlElement
-from sciensnp.app.report.htmltablecell import HtmlTableCell
+from pacu.app.report.htmlbase import HtmlBase
+from pacu.app.report.htmlelement import HtmlElement
+from pacu.app.report.htmltablecell import HtmlTableCell
 
 
 class HtmlReportSection(HtmlElement):

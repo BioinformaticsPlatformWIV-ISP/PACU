@@ -2,7 +2,7 @@ import json
 from importlib.resources import files
 from typing import Dict, Any
 
-from sciensnp.app.report.htmlbase import HtmlBase
+from pacu.app.report.htmlbase import HtmlBase
 
 
 class HtmlCitation(HtmlBase):
@@ -68,7 +68,7 @@ class HtmlCitation(HtmlBase):
         :param json_basename: Basename for the JSON file
         :return: Citation
         """
-        json_citation = files('sciensnp').joinpath(f'resources/citations/{json_basename}.json')
+        json_citation = files('pacu').joinpath(f'resources/citations/{json_basename}.json')
         with json_citation.open(encoding='utf-8') as handle:
             data = json.load(handle)
         return HtmlCitation(data)

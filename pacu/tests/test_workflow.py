@@ -3,7 +3,7 @@ import unittest
 from importlib.resources import files
 from pathlib import Path
 
-from sciensnp import ScienSNP
+from pacu import PACU
 
 
 class TestWorkflow(unittest.TestCase):
@@ -15,12 +15,12 @@ class TestWorkflow(unittest.TestCase):
         """
         Tests the SNP workflow with mixed input (Illumina + R10) and IQ-TREE tree construction.
         """
-        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
+        with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
             dir_out = Path(dir_, 'output')
-            workflow = ScienSNP([
-                '--ref-fasta', str(files('sciensnp').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
-                '--ilmn-in', str(files('sciensnp').joinpath('resources/testdata/bam/ilmn')),
-                '--ont-in', str(files('sciensnp').joinpath('resources/testdata/bam/ont')),
+            workflow = PACU([
+                '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
+                '--ilmn-in', str(files('pacu').joinpath('resources/testdata/bam/ilmn')),
+                '--ont-in', str(files('pacu').joinpath('resources/testdata/bam/ont')),
                 '--dir-working', str(dir_),
                 '--output', str(dir_out),
                 '--threads', '8'
@@ -31,12 +31,12 @@ class TestWorkflow(unittest.TestCase):
         """
         Tests the SNP workflow with mixed input (Illumina + R10) and MEGA tree construction.
         """
-        with tempfile.TemporaryDirectory(prefix='sciensnp') as dir_:
+        with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
             dir_out = Path(dir_, 'output')
-            workflow = ScienSNP([
-                '--ref-fasta', str(files('sciensnp').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
-                '--ilmn-in', str(files('sciensnp').joinpath('resources/testdata/bam/ilmn')),
-                '--ont-in', str(files('sciensnp').joinpath('resources/testdata/bam/ont')),
+            workflow = PACU([
+                '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
+                '--ilmn-in', str(files('pacu').joinpath('resources/testdata/bam/ilmn')),
+                '--ont-in', str(files('pacu').joinpath('resources/testdata/bam/ont')),
                 '--use-mega',
                 '--dir-working', str(dir_),
                 '--output', str(dir_out),

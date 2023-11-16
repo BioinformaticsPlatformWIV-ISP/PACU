@@ -2,7 +2,7 @@ import bs4
 from bs4 import BeautifulSoup
 from yattag import Doc
 
-from sciensnp.app.report.htmlbase import HtmlBase
+from pacu.app.report.htmlbase import HtmlBase
 
 
 class HtmlElement(HtmlBase):

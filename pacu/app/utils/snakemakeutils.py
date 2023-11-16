@@ -4,8 +4,8 @@ from typing import Dict, Any, List, Union
 
 import yaml
 
-from sciensnp.app.command import Command
-from sciensnp.app.utils.loggingutils import logger
+from pacu.app.command import Command
+from pacu.app.utils.loggingutils import logger
 
 
 def generate_config_file(config_data: Dict[str, Any], output_dir: Path, output_basename: str = 'config.yml') -> str:

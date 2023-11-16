@@ -2,8 +2,8 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Optional, Dict
 
-from sciensnp.app.command import Command
-from sciensnp.app.utils.loggingutils import logger
+from pacu.app.command import Command
+from pacu.app.utils.loggingutils import logger
 
 OPTIONS = {
     'branch_swap_filter': ['None', 'Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'],
@@ -52,7 +52,7 @@ def __create_config_file_model_selection(
     :return: Path to config file
     """
     # Parse the template
-    path_template = files('sciensnp').joinpath('resources/mega/model_sel_ml_nucleotide_template.mao')
+    path_template = files('pacu').joinpath('resources/mega/model_sel_ml_nucleotide_template.mao')
     with path_template.open() as handle:
         template = handle.read()
     logger.info(f'Template parsed')
@@ -135,7 +135,7 @@ def __create_config_file_tree_construction(
     :return: Path to config file
     """
     # Parse the template
-    path_template = files('sciensnp').joinpath('resources/mega/infer_ml_nucleotide_template.mao')
+    path_template = files('pacu').joinpath('resources/mega/infer_ml_nucleotide_template.mao')
     with path_template.open() as handle:
         template = handle.read()
     logger.info(f'Template parsed')

@@ -3,8 +3,8 @@ import argparse
 from pathlib import Path
 from typing import Tuple, List
 
-from sciensnp import initialize_logging, logger, ScienSNP
-from sciensnp.app.utils import workflowutils
+from pacu import initialize_logging, logger, PACU
+from pacu.app.utils import workflowutils
 
 
 def parse_galaxy_args() -> Tuple[argparse.Namespace, List[str]]:
@@ -23,7 +23,7 @@ def parse_galaxy_args() -> Tuple[argparse.Namespace, List[str]]:
 
 if __name__ == '__main__':
     initialize_logging()
-    logger.info(f'Running ScienSNP through Galaxy')
+    logger.info(f'Running PACU through Galaxy')
     args, unparsed_args = parse_galaxy_args()
 
     # Create input directory
@@ -61,5 +61,5 @@ if __name__ == '__main__':
         unparsed_args.extend(['--ont-in', str(dir_bam.absolute())])
 
     # Run the main script
-    workflow = ScienSNP(unparsed_args)
+    workflow = PACU(unparsed_args)
     workflow.run()

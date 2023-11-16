@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from typing import Union
 
-from sciensnp import Command, logger
+from pacu import Command, logger
 
 
 def run_ml_tree_construction(path_fasta: Path, path_out: Path, threads: int = 4) -> Command:
