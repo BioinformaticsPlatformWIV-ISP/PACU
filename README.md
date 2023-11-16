@@ -1,17 +1,20 @@
-# ScienSNP
-Workflow for whole genome sequencing based phylogeny of Illumina and ONT R9/R10 data.
+# PACU
+PACU is a workflow for whole genome sequencing based phylogeny of Illumina and ONT R9/R10 data.
 
-### ScienSNP is also available on our public [Galaxy instance](https://galaxy.sciensano.be/) (registration required).
+PACU stands for the Prokaryotic Awesome variant Calling Utility and is named after an omnivorous fish (that eats both 
+Illumina and ONT reads).
+
+### PACU is also available on our public [Galaxy instance](https://galaxy.sciensano.be/) (registration required).
 
 ----
 
 ## INSTALLATION
 
 ```
-git clone https://bioit-git.sciensano.be/bioit-shared/bb_sciensnp.git
+git clone https://github.com/BertBog/PACU
 ```
 
-The ScienSNP dependencies can be installed via Conda or manually.
+The PACU dependencies can be installed via Conda or manually.
 
 ### CONDA installation
 
@@ -19,13 +22,13 @@ The ScienSNP dependencies can be installed via Conda or manually.
 
 ```
 mamba env create -f environment.yml;
-conda activate sciensnp_env;
+conda activate pacu_env;
 pip install .;
 ```
 
 ### Manual installation
 
-The ScienSNP workflow has the following dependencies:
+The PACU workflow has the following dependencies:
 - [BEDTools 2.27.1](https://github.com/arq5x/bedtools2/releases/tag/v2.27.1)
 - [bcftools 1.17](https://github.com/samtools/bcftools/releases/tag/1.17)
 - [FigTree 1.4.4](http://tree.bio.ed.ac.uk/software/figtree/)
@@ -45,8 +48,8 @@ The required Python packages are listed in the `requirements.txt` file.
 Python 3.9 or 3.10 is recommended for a manual installation.
 
 ```
-virtualenv sciensnp_env --python=python3.9
-. sciensnp_env/bin/activate;
+virtualenv pacu_env --python=python3.9
+. pacu_env/bin/activate;
 pip install -r requirements.txt 
 pip install .;
 ```
@@ -56,12 +59,12 @@ Note: Make sure you are in the directory containing the `setup.py` script when r
 ## USAGE
 
 ```
-usage: run_sciensnp.py [-h] [--ilmn-in ILMN_IN] [--ont-in ONT_IN] --ref-fasta REF_FASTA [--ref-bed REF_BED]
-                       [--dir-working DIR_WORKING] [--output OUTPUT] [--calling-method {clair3,samtools}] [--include-ref]
-                       [--min-snp-af MIN_SNP_AF] [--min-snp-qual MIN_SNP_QUAL] [--min-snp-depth MIN_SNP_DEPTH]
-                       [--min-snp-dist MIN_SNP_DIST] [--min-global-depth MIN_GLOBAL_DEPTH] [--min-mq-depth MIN_MQ_DEPTH]
-                       [--bcftools-filt-af1] [--image-width IMAGE_WIDTH] [--image-height IMAGE_HEIGHT] [--threads THREADS]
-                       [--version]
+usage: run_pacu.py [-h] [--ilmn-in ILMN_IN] [--ont-in ONT_IN] --ref-fasta REF_FASTA [--ref-bed REF_BED]
+                   [--dir-working DIR_WORKING] [--output OUTPUT] [--calling-method {clair3,samtools}] [--include-ref]
+                   [--min-snp-af MIN_SNP_AF] [--min-snp-qual MIN_SNP_QUAL] [--min-snp-depth MIN_SNP_DEPTH]
+                   [--min-snp-dist MIN_SNP_DIST] [--min-global-depth MIN_GLOBAL_DEPTH] [--min-mq-depth MIN_MQ_DEPTH]
+                   [--bcftools-filt-af1] [--image-width IMAGE_WIDTH] [--image-height IMAGE_HEIGHT] [--threads THREADS]
+                   [--version]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -100,11 +103,11 @@ optional arguments:
 
 ### Basic usage example
 
-The ScienSNP workflow requires BAM files as input with reads mapped to a reference genome. 
+The PACU workflow requires BAM files as input with reads mapped to a reference genome. 
 Illumina data can be provided using the `--ilmn-in` option, ONT data can be provided using the `--ont-in` option.
 
 ```
-run_sciensnp.py \
+run_pacu.py \
     --ilmn-in in/ilmn/ \
     --ont-in in/ont/ \
     --ref-fasta ref.fasta \
@@ -144,7 +147,7 @@ small part of the *E. coli* NC_002695.2 genome. This is a not a real dataset, an
 
 The complete workflow can be tested using the following command:
 ```
-pytest --log-cli-level=DEBUG sciensnp/tests/test_workflow.py
+pytest --log-cli-level=DEBUG pacu/tests/test_workflow.py
 ```
 
 ## CITATION
