@@ -11,7 +11,7 @@ Illumina and ONT reads).
 ## INSTALLATION
 
 ```
-git clone https://github.com/BertBog/PACU
+git clone https://github.com/BioinformaticsPlatformWIV-ISP/PACU.git
 ```
 
 The PACU dependencies can be installed via Conda or manually.
