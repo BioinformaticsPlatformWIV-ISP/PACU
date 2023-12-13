@@ -21,6 +21,7 @@ The PACU dependencies can be installed via Conda or manually.
 **Tip**: It is recommended to use `mamba` to install the dependencies, but `conda` can also be used.
 
 ```
+cd PACU/
 mamba env create -f environment.yml;
 conda activate pacu_env;
 pip install .;
