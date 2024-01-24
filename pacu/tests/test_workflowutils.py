@@ -25,6 +25,30 @@ class TestWorkflowUtils(unittest.TestCase):
             self.assertTrue(path_out.exists())
             self.assertGreater(path_out.stat().st_size, 0)
 
+    def test_determine_name_from_fq_ont(self) -> None:
+        """
+        Tests the 'determine_name_from_fq' function with ONT input.
+        :return: None
+        """
+        self.assertEqual(workflowutils.determine_name_from_fq(fq_ont=Path('/path/to/reads.fastq')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(fq_ont=Path('/path/to/reads.fastq.gz')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(fq_ont=Path('/path/to/reads.fq')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(fq_ont=Path('/path/to/reads.fq.gz')), 'reads')
+
+    def test_determine_name_from_fq_illumina(self) -> None:
+        """
+        Tests the 'determine_name_from_fq' function with Illumina input.
+        :return: None
+        """
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/my-reads_1P.fastq')), 'my-reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/input_file_1.fastq.gz')), 'input_file')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_1.fq')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_1P.fq.gz')), 'reads')
+
 
 if __name__ == '__main__':
     unittest.main()

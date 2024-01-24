@@ -1,3 +1,5 @@
+import binascii
+import re
 import tempfile
 from importlib.resources import files
 from pathlib import Path
@@ -221,3 +223,29 @@ def sanitize_bam_input(name: str) -> str:
     if not name.endswith('.bam'):
         return f'{name}.bam'
     return ''.join(c for c in name if c not in invalid_chars)
+
+
+def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> str:
+    """
+    Determines the sample name from the FASTQ input.
+    :param fq_ont: Input ONT FASTQ file
+    :param fq_illumina_1p: Input illumina forward FASTQ file
+    :return: Sample name
+    """
+    if fq_ont is not None:
+        return re.sub(r'\.(fastq|fq)(\.gz)?', '', fq_ont.name)
+    elif fq_illumina_1p is not None:
+        return re.sub(r'_1P?\.(fastq|fq)(\.gz)?', '', fq_illumina_1p.name)
+    else:
+        raise ValueError('No FASTQ file provided')
+
+
+def is_gzipped(path: Path) -> bool:
+    """
+    Checks if the given file is compressed with gzip.
+    :param path: Path
+    :return: True if gzipped, False otherwise
+    """
+    with path.open('rb') as handle:
+        magic_number = binascii.hexlify(handle.read(2))
+    return magic_number == b'1f8b'

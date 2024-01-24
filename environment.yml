@@ -15,7 +15,9 @@ dependencies:
   - pandas=2.1.0
   - pyvcf3=1.0.3
   - samtools=1.17
+  - seqkit=2.3.1
   - snakemake=7.32.4
   - snp-dists=0.8.2
+  - trimmomatic=0.39
   - upsetplot=0.8.0
   - yattag=1.15.1

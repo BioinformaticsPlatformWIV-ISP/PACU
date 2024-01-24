@@ -1,8 +1,10 @@
+#! /usr/bin/env python
 import argparse
 from pathlib import Path
-from typing import Sequence, Optional
+from typing import Sequence, Optional, Dict
 
 from pacu import initialize_logging, Command, logger
+from pacu.app.utils import workflowutils, trimmingutils
 
 
 class MapToRef(object):
@@ -17,6 +19,8 @@ class MapToRef(object):
         :return: None
         """
         self._args = MapToRef._parse_arguments(args)
+        self._name = self._determine_name()
+        logger.info(f'Input name: {self._name}')
 
     def run(self) -> None:
         """
@@ -25,12 +29,18 @@ class MapToRef(object):
         """
         logger.info(f'Starting mapping helper ({self._args.read_type})')
         self._check_dependencies()
+        self._rename_galaxy_input()
         if self._args.read_type == 'illumina':
             path_ref = self._illumina_idx_ref()
-            self._map_illumina(path_ref, self._args.output)
+            if self._args.trim:
+                fq_dict = self._illumina_trim()
+            else:
+                fq_dict = {'1P': self._args.fastq_illumina[0], '2P': self._args.fastq_illumina[1]}
+            self._illumina_map(fq_dict, path_ref, self._args.output)
         else:
             path_ref = self._ont_idx_ref()
-            self._map_ont(path_ref, self._args.output)
+            path_fq = self._ont_trim() if self._args.trim else self._args.fastq_ont
+            self._ont_map(path_fq, path_ref, self._args.output)
 
     @property
     def ref_name(self) -> str:
@@ -54,6 +64,36 @@ class MapToRef(object):
         logger.debug(f'Creating symlink for reference genome: {path_ref_link} -> {self._args.ref_fasta}')
         return path_ref_link
 
+    def _illumina_trim(self) -> Dict[str, Path]:
+        """
+        Trims the Illumina reads.
+        :return: None
+        """
+        logger.info(f'Trimming Illumina reads')
+
+        # Create directory
+        dir_trim = Path(self._args.dir_working, 'trim')
+        dir_trim.mkdir(exist_ok=True, parents=True)
+
+        # Run trimming
+        command = Command(' '.join([
+            'trimmomatic', 'PE',
+            '-baseout', f'{self._name}.fastq.gz',
+            f'-threads {self._args.threads}',
+            str(self._args.fastq_illumina[0]),
+            str(self._args.fastq_illumina[1]),
+            f"ILLUMINACLIP:{Path(trimmingutils.trimmomatic_dir_adapters(), 'NexteraPE-PE.fa')}:2:30:10",
+            'LEADING:10',
+            'TRAILING:10',
+            'SLIDINGWINDOW:4:20',
+            'MINLEN:40',
+            '-phred33'
+        ]))
+        command.run(dir_trim)
+        if not command.exit_code == 0:
+            raise RuntimeError(f'Error trimming reads: {command.stderr}')
+        return trimmingutils.trimmomatic_collect_output(dir_trim)
+
     def _illumina_idx_ref(self) -> Path:
         """
         Creates an index for the reference genome for Illumina mapping.
@@ -68,26 +108,59 @@ class MapToRef(object):
         logger.info(f'Bowtie2 index created in: {dir_idx}')
         return path_ref_link
 
-    def _map_illumina(self, path_ref: Path, path_out: Path) -> None:
+    def _illumina_map(self, fq_dict: Dict[str, Path], path_ref: Path, path_out: Path) -> None:
         """
-        Maps the Illumina reads
+        Maps the Illumina reads to the reference genome.
+        :param fq_dict: Input FASTQ dictionary
         :param path_ref: Path to reference genome
         :param path_out: Path to output BAM file
         :return: None
         """
+        # Construct bowtie2 command
+        parts_bt2 = [
+            'bowtie2', '--end-to-end', '--sensitive', f'-x {path_ref}', f"-1 {fq_dict['1P']}", f"-2 {fq_dict['2P']}"]
+
+        # Add orphaned reads (if available)
+        orphaned_reads = [fq_dict.get(k) for k in ('1U', '2U') if fq_dict.get(k) is not None]
+        if len(orphaned_reads) > 0:
+            parts_bt2.append(f"-U {','.join(str(p) for p in orphaned_reads)}")
+        parts_bt2.append(f'-p {self._args.threads}')
+
+        # Execute the command
         command = Command(' '.join([
-            'bowtie2',
-            '--end-to-end',
-            '--sensitive',
-            f'-x {path_ref}',
-            f'-1 {self._args.fastq_illumina[0]}',
-            f'-2 {self._args.fastq_illumina[1]}',
-            f'-p {self._args.threads}',
+            *parts_bt2,
             f'| samtools view -b | samtools sort - > {path_out}'
         ]))
         command.run(self._args.dir_working)
         if not command.exit_code == 0:
             raise RuntimeError(f'Error mapping reads: {command.stderr}')
+
+    def _ont_trim(self, min_qual: int = 7, min_len: int = 500) -> Path:
+        """
+        Trims the input ONT reads.
+        :param min_qual: Minimum read quality
+        :param min_len: Minimum read length
+        :return: Path to trimmed reads
+        """
+        logger.info(f'Trimming ONT reads')
+
+        # Create directory
+        dir_trim = Path(self._args.dir_working, 'trim')
+        dir_trim.mkdir(exist_ok=True, parents=True)
+
+        # Run the command
+        path_out = dir_trim / f'{self._name}.fastq.gz'
+        command = Command(' '.join([
+            'seqkit seq',
+            '--min-qual', str(min_qual),
+            '--min-len', str(min_len),
+            str(self._args.fastq_ont),
+            f'> {path_out}'
+        ]))
+        command.run(path_out.parent)
+        if not command.exit_code == 0:
+            raise RuntimeError(f'Error trimming reads: {command.stderr}')
+        return path_out
 
     def _ont_idx_ref(self) -> Path:
         """
@@ -104,9 +177,10 @@ class MapToRef(object):
         logger.info(f'Minimap2 index created in: {dir_idx}')
         return path_mni
 
-    def _map_ont(self, path_ref: Path, path_out: Path) -> None:
+    def _ont_map(self, path_fq: Path, path_ref: Path, path_out: Path) -> None:
         """
         Maps the ONT reads
+        :param path_fq: Path to the input FASTQ file
         :param path_ref: Path to reference genome
         :param path_out: Path to output BAM file
         :return: None
@@ -114,7 +188,7 @@ class MapToRef(object):
         command = Command(' '.join([
             'minimap2',
             f'-a {path_ref}',
-            str(self._args.fastq_ont),
+            str(path_fq),
             f'-t {self._args.threads}',
             f'| samtools view -b | samtools sort - > {path_out}'
         ]))
@@ -145,7 +219,8 @@ class MapToRef(object):
 
         # Other options
         parser.add_argument(
-            '--dir-working', type=Path, help='Working directory', default=Path.cwd())
+            '--dir-working', type=Path, help='Working directory', required=True)
+        parser.add_argument('--trim', action='store_true', help='Trim reads prior to mapping')
         parser.add_argument('--output', required=True, type=Path, help='Output BAM file')
         parser.add_argument('--threads', type=int, default=4)
         return parser.parse_args(args)
@@ -160,13 +235,54 @@ class MapToRef(object):
             'minimap2': 'minimap2 --version',
             'samtools': 'samtools --version',
         }
+        if self._args.trim:
+            commands['trimmomatic'] = 'trimmomatic -version'
+            commands['seqkit'] = 'seqkit version'
         logger.info(f'Checking dependencies')
-        for tool, command in commands.items():
-            command = Command(command)
+        for tool, command_str in commands.items():
+            command = Command(command_str)
             command.run(self._args.dir_working, disable_logging=True)
             if not command.exit_code == 0:
                 raise RuntimeError(f"Dependency '{tool}' not available")
             logger.info(f"{tool}: OK")
+
+    def _rename_galaxy_input(self) -> None:
+        """
+        Renames the input files when the script is executed through Galaxy.
+        :return: None
+        """
+        if self._args.fastq_illumina_names is not None:
+            # Symlink the input files
+            Path(self._args.dir_working, 'input').mkdir(parents=True, exist_ok=True)
+            for idx in (0, 1):
+                is_gzipped = workflowutils.is_gzipped(self._args.fastq_illumina[idx])
+                path_link = Path(
+                    self._args.dir_working, 'input', f'{self._name}_{idx+1}P.fastq' + ('.gz' if is_gzipped else ''))
+                logger.debug(f'Creating link: {path_link} -> {self._args.fastq_illumina[idx]}')
+                path_link.absolute().symlink_to(self._args.fastq_illumina[idx].absolute())
+                self._args.fastq_illumina[idx] = path_link
+        elif self._args.fastq_ont_name is not None:
+            Path(self._args.dir_working, 'input').mkdir(parents=True, exist_ok=True)
+            is_gzipped = workflowutils.is_gzipped(self._args.fastq_ont)
+            path_link = Path(
+                self._args.dir_working, 'input', f'{self._name}.fastq' + ('.gz' if is_gzipped else '')).absolute()
+            path_link.symlink_to(self._args.fastq_ont.absolute())
+        else:
+            logger.debug(f'Not renaming inputs')
+
+    def _determine_name(self) -> str:
+        """
+        Determines the input name.
+        :return: Input name
+        """
+        if self._args.read_type == 'ont':
+            if self._args.fastq_ont_name is not None:
+                return workflowutils.determine_name_from_fq(fq_ont=Path(self._args.fastq_ont_name))
+            return workflowutils.determine_name_from_fq(fq_ont=self._args.fastq_ont)
+        else:
+            if self._args.fastq_illumina_names is not None:
+                return workflowutils.determine_name_from_fq(fq_illumina_1p=Path(self._args.fastq_illumina_names[0]))
+            return workflowutils.determine_name_from_fq(fq_illumina_1p=self._args.fastq_illumina[0])
 
 
 if __name__ == '__main__':
