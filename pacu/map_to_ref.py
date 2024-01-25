@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Sequence, Optional, Dict
 
 from pacu import initialize_logging, Command, logger
-from pacu.app.utils import workflowutils, trimmingutils
+from pacu.app.utils import workflowutils, trimmingutils, bamutils
 
 
 class MapToRef(object):
@@ -30,6 +30,8 @@ class MapToRef(object):
         logger.info(f'Starting mapping helper ({self._args.read_type})')
         self._check_dependencies()
         self._rename_galaxy_input()
+
+        # Illumina reads
         if self._args.read_type == 'illumina':
             path_ref = self._illumina_idx_ref()
             if self._args.trim:
@@ -37,10 +39,17 @@ class MapToRef(object):
             else:
                 fq_dict = {'1P': self._args.fastq_illumina[0], '2P': self._args.fastq_illumina[1]}
             self._illumina_map(fq_dict, path_ref, self._args.output)
+
+        # ONT reads
         else:
             path_ref = self._ont_idx_ref()
             path_fq = self._ont_trim() if self._args.trim else self._args.fastq_ont
             self._ont_map(path_fq, path_ref, self._args.output)
+
+        # Add a custom tag with the original dataset name (used for Galaxy)
+        path_bam_temp = Path(self._args.dir_working, 'tmp.bam')
+        self._args.output.rename(path_bam_temp)
+        bamutils.add_custom_tag('PACU_name', self._name, path_bam_temp, self._args.output)
 
     @property
     def ref_name(self) -> str:

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Tuple, List
 
 from pacu import initialize_logging, logger, PACU
-from pacu.app.utils import workflowutils
+from pacu.app.utils import workflowutils, bamutils
 
 
 def parse_galaxy_args() -> Tuple[argparse.Namespace, List[str]]:
@@ -19,6 +19,20 @@ def parse_galaxy_args() -> Tuple[argparse.Namespace, List[str]]:
     parser.add_argument('--bam-ont', nargs=2, action='append')
     parser.add_argument('--dir-working', default=Path.cwd(), type=Path, help='Working directory')
     return parser.parse_known_args()
+
+
+def _extract_dataset_name(bam_in: Path, name_orig: str) -> str:
+    """
+    Extracts the dataset name from the input BAM file.
+    :param bam_in: Input BAM file
+    :param name_orig: Galaxy name
+    :return: Extracted name
+    """
+    try:
+        return bamutils.read_custom_tag(bam_in, 'PACU_name')
+    except ValueError:
+        logger.debug(f"'PACU_name' not found in BAM header: {name_orig}")
+    return workflowutils.sanitize_bam_input(name_orig)
 
 
 if __name__ == '__main__':
@@ -41,11 +55,12 @@ if __name__ == '__main__':
         logger.info(f'Creating symlinks for Illumina input ({len(args.bam_ilmn)} datasets)')
         dir_bam = dir_in / 'bam_ilmn'
         dir_bam.mkdir(exist_ok=True)
-        for path, name in args.bam_ilmn:
+        for path_bam, galaxy_name in args.bam_ilmn:
             try:
-                (dir_bam / workflowutils.sanitize_bam_input(name)).symlink_to(path)
+                basename = f'{_extract_dataset_name(Path(path_bam), galaxy_name)}.bam'
+                (dir_bam / basename).symlink_to(path_bam)
             except FileExistsError:
-                logger.debug(f"Symlink for '{name}' already exists")
+                logger.debug(f"Symlink for '{galaxy_name}' already exists")
         unparsed_args.extend(['--ilmn-in', str(dir_bam.absolute())])
 
     # Symlink the BAM files (ONT)
@@ -53,11 +68,12 @@ if __name__ == '__main__':
         logger.info(f'Creating symlinks for ONT input ({len(args.bam_ont)} datasets)')
         dir_bam = dir_in / 'bam_ont'
         dir_bam.mkdir(exist_ok=True)
-        for path, name in args.bam_ont:
+        for path_bam, galaxy_name in args.bam_ont:
             try:
-                (dir_bam / workflowutils.sanitize_bam_input(name)).symlink_to(path)
+                basename = f'{_extract_dataset_name(Path(path_bam), galaxy_name)}.bam'
+                (dir_bam / basename).symlink_to(path_bam)
             except FileExistsError:
-                logger.debug(f"Symlink for '{name}' already exists")
+                logger.debug(f"Symlink for '{galaxy_name}' already exists")
         unparsed_args.extend(['--ont-in', str(dir_bam.absolute())])
 
     # Run the main script
