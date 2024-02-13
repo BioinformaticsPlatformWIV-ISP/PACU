@@ -39,6 +39,8 @@ The PACU workflow has the following dependencies:
 - [IQ-Tree 2.2.5](https://github.com/iqtree/iqtree2)
 
 The mapping script has the following additional dependencies:
+- [Trimmomatic 0.39](https://github.com/usadellab/Trimmomatic)
+- [SeqKit 2.3.1](https://github.com/shenwei356/seqkit)
 - [Bowtie2 2.5.1](https://github.com/BenLangmead/bowtie2)
 - [Minimap2 2.26](https://github.com/lh3/minimap2)
 
@@ -120,7 +122,8 @@ run_pacu.py \
 ### Read mapping
 
 A script is included to map reads to a reference genome in FASTA format for both ONT and Illumina data.
-The resulting BAM files can be used as input for the SNP workflow.
+The resulting BAM files can be used as input for the SNP workflow. The `--trim` option can be used to perform read
+trimming before mapping.
 
 *Illumina data*
 ```
@@ -151,9 +154,12 @@ The complete workflow can be tested using the following command:
 pytest --log-cli-level=DEBUG pacu/tests/test_workflow.py
 ```
 
+## CONTACT
+[Create an issue](https://github.com/BioinformaticsPlatformWIV-ISP/PACU/issues) to report bugs, propose new functions or ask for help.
+
 ## CITATION
 If you use this tool, please consider citing our [TODO](https://example.com).
 
 -----
 
-Copyright - 2023 Bert Bogaerts <bert.bogaerts@sciensano.be>
+Copyright - 2024 Bert Bogaerts <bert.bogaerts@sciensano.be>
