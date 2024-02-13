@@ -27,6 +27,9 @@ conda activate pacu_env;
 pip install .;
 ```
 
+**Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
+`IQ-Tree` can be used instead.
+
 ### Manual installation
 
 The PACU workflow has the following dependencies:
