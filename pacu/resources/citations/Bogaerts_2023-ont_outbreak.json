@@ -1,27 +1,23 @@
 {
   "type_of_reference": "JOUR",
-  "primary_title": "Closing the gap: Oxford Nanopore Technologies R10 sequencing allows comparable results to Illumina sequencing for SNP-based outbreak investigation of bacterial pathogens",
+  "primary_title": "Closing the gap: Oxford Nanopore Technologies R10 sequencing allows comparable  results to Illumina sequencing for SNP-based outbreak investigation of bacterial pathogens.",
   "first_authors": [
     "Bogaerts, Bert",
     "Van den Bossche, An",
     "Verhaegen, Bavo",
+    "Delbrassinne, Laurence",
     "Mattheus, Wesley",
+    "Nouws, Stéphanie",
     "Godfroid, Maxime",
     "Hoffman, Stefan",
-    "Roosens, Nancy H. C.",
-    "De Keersmaecker, Sigrid C. J.",
+    "Roosens, Nancy H C",
+    "De Keersmaecker, Sigrid C J",
     "Vanneste, Kevin"
   ],
-  "publication_year": "2023/00//",
-  "keywords": [
-    "outbreak",
-    "nanopore-sequencing",
-    "public health"
-  ],
-  "publisher": "TBD",
-  "alternate_title3": "TBD",
-  "volume": "TBD",
-  "number": "TBD",
-  "doi": "TBD",
-  "url": "TBD"
+  "publication_year": "2024/03//",
+  "alternate_title3": "Journal of clinical microbiology",
+  "language": "eng",
+  "start_page": "e0157623",
+  "end_page": "e0157623",
+  "doi": "10.1128/jcm.01576-23"
 }

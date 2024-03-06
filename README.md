@@ -161,7 +161,7 @@ pytest --log-cli-level=DEBUG pacu/tests/test_workflow.py
 [Create an issue](https://github.com/BioinformaticsPlatformWIV-ISP/PACU/issues) to report bugs, propose new functions or ask for help.
 
 ## CITATION
-If you use this tool, please consider citing our [TODO](https://example.com).
+If you use this tool, please consider citing our [publication](https://pubmed.ncbi.nlm.nih.gov/38441926/).
 
 -----
 
