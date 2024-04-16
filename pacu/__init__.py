@@ -107,6 +107,8 @@ class PACU(object):
         if len(input_dict) == 0:
             raise FileNotFoundError(
                 f'No input datasets found (searched in Illumina={self._args.ilmn_in}, ONT={self._args.ont_in})')
+        if len(input_dict) < 4:
+            raise ValueError(f'At least four input BAM files are required (for bootstrapping).')
 
         config_data = {
             'depth': {
