@@ -34,7 +34,7 @@ def calculate_overlaps(size: int, bed_phages: Path, bed_gubbins: Path, bed_depth
     Calculates the size of the overlaps between the BED files.
     :param bed_phages: BED file with phage regions
     :param bed_gubbins: BED file with recombination detected by Gubbins
-    :param bed_depth: BED file with low depth positions
+    :param bed_depth: BED file with low-depth positions
     :param size: Reference genome size
     """
     data_overlap = pd.DataFrame(data={'pos': range(size)})
@@ -111,7 +111,7 @@ def calculate_distance(row: pd.Series) -> Union[int, None]:
 def filter_snp_distance(vcf_in: Path, vcf_out: Path, min_dist: int = 10) -> None:
     """
     Soft-filters SNPs that are located within less than other SNPs.
-    Note that the considers all SNPs
+    Note that the filter considers all SNPs (including those at filtered positions)
     :param min_dist: Minimum distance between SNPs
     :param vcf_in: Input VCF file
     :param vcf_out: Output VCF file
@@ -188,7 +188,7 @@ def plot_newick_phylogeny(path_nwk: Path, path_out: Path, width: int = 600, heig
     :return: None
     """
     with tempfile.NamedTemporaryFile(prefix='pacu') as file_:
-        # Convert tree to Nexus format
+        # Convert the tree to Nexus format
         Phylo.convert(str(path_nwk), 'newick', file_.name, 'nexus')
 
         # Add the figtree code
@@ -225,6 +225,11 @@ def sanitize_bam_input(name: str) -> str:
     return ''.join(c for c in name if c not in invalid_chars)
 
 
+PATTERNS_FQ_PE = [
+    r'(.*)_1P?\.(fastq|fq)(\.gz)?',
+    r'(.*)_L\d+_R1_\d+\.(fastq|fq)(\.gz)?'
+]
+
 def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> str:
     """
     Determines the sample name from the FASTQ input.
@@ -235,7 +240,14 @@ def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> 
     if fq_ont is not None:
         return re.sub(r'\.(fastq|fq)(\.gz)?', '', fq_ont.name)
     elif fq_illumina_1p is not None:
-        return re.sub(r'_1P?\.(fastq|fq)(\.gz)?', '', fq_illumina_1p.name)
+        for pattern in PATTERNS_FQ_PE:
+            print(pattern, fq_illumina_1p.name)
+            m = re.match(pattern, fq_illumina_1p.name)
+            if not m:
+                continue
+            return m.group(1)
+        logger.warning(f'FASTQ input format does not match known formats')
+        return re.sub('(fastq|fq)(\.gz)', '', fq_illumina_1p.name)
     else:
         raise ValueError('No FASTQ file provided')
 

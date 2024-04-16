@@ -40,6 +40,7 @@ class TestWorkflowUtils(unittest.TestCase):
         Tests the 'determine_name_from_fq' function with Illumina input.
         :return: None
         """
+        print(workflowutils.determine_name_from_fq(fq_illumina_1p=Path('/path/to/my-reads_1P.fastq')))
         self.assertEqual(workflowutils.determine_name_from_fq(
             fq_illumina_1p=Path('/path/to/my-reads_1P.fastq')), 'my-reads')
         self.assertEqual(workflowutils.determine_name_from_fq(
@@ -48,6 +49,11 @@ class TestWorkflowUtils(unittest.TestCase):
             fq_illumina_1p=Path('/path/to/reads_1.fq')), 'reads')
         self.assertEqual(workflowutils.determine_name_from_fq(
             fq_illumina_1p=Path('/path/to/reads_1P.fq.gz')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_S22_L001_R1_001.fastq.gz')), 'reads_S22')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_S22_L001_R1_001.fq.gz')), 'reads_S22')
+
 
 
 if __name__ == '__main__':
