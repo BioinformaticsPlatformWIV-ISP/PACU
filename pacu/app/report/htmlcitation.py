@@ -26,9 +26,12 @@ class HtmlCitation(HtmlBase):
             'jour': self._process_journal_citation,
             'book': self._process_book_citation}
         try:
+            import pprint
+            pprint.pprint(citation_data['type_of_reference'].lower())
             citation_processor[citation_data['type_of_reference'].lower()]()
-        except KeyError:
-            raise KeyError(f"Citations of type {citation_data['type_of_reference']} are not supported!")
+        except KeyError as err:
+            raise KeyError(
+                f"Citations of type {citation_data['type_of_reference']} are not supported! (KeyError '{err}')")
 
     def _process_journal_citation(self) -> None:
         """
@@ -38,7 +41,8 @@ class HtmlCitation(HtmlBase):
         with self.get_tag('div', attributes=[('class', 'citations')]):
             with self.get_tag('p'):
                 # Volume + (number optional)
-                journal_parts = [self._citation_data['alternate_title3'], f", {self._citation_data['volume']}"]
+                journal_parts = [
+                    self._citation_data['alternate_title3'], f", {self._citation_data.get('volume', 'n/a')}"]
                 if 'number' in self._citation_data:
                     journal_parts.append(f" ({self._citation_data['number']})")
                 journal = ''.join(journal_parts)
