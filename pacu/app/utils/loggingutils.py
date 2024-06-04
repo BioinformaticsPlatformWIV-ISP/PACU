@@ -18,8 +18,8 @@ def initialize_logging() -> None:
     console_handler.name = 'console'
     logger.addHandler(console_handler)
 
-    # File handler (camel.log file)
-    file_handler = logging.FileHandler('camel.log')
+    # File handler (pacu.log file)
+    file_handler = logging.FileHandler('pacu.log')
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
