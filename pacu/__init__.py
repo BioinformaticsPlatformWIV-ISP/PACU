@@ -3,6 +3,8 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Optional, Sequence
 
+from Bio import SeqIO
+
 from pacu.app.command import Command
 from pacu.app.utils import snakemakeutils
 from pacu.app.utils.loggingutils import initialize_logging, logger
@@ -32,6 +34,7 @@ class PACU(object):
         """
         logger.info('Starting PACU workflow')
         self._check_dependencies()
+        self._validate_input_files()
         path_snakefile = Path(str(files('pacu').joinpath('resources/snp_workflow.smk')))
         if self._args.ref_bed is None:
             path_bed = self._args.dir_working / 'empty_phages.bed'
@@ -165,3 +168,13 @@ class PACU(object):
             if not command.exit_code == 0:
                 raise RuntimeError(f"Dependency '{tool}' not available")
             logger.info(f"{tool}: OK")
+
+    def _validate_input_files(self) -> None:
+        """
+        Checks if the provided input files are valid.
+        :return: None
+        """
+        with open(self._args.ref_fasta) as handle:
+            seqs = list(SeqIO.parse(handle, 'fasta'))
+            if len(seqs) > 1:
+                raise ValueError(f'The reference genome should only contain a single sequence ({len(seqs):,} found)')
