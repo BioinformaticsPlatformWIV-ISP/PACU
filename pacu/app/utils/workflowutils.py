@@ -241,7 +241,6 @@ def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> 
         return re.sub(r'\.(fastq|fq)(\.gz)?', '', fq_ont.name)
     elif fq_illumina_1p is not None:
         for pattern in PATTERNS_FQ_PE:
-            print(pattern, fq_illumina_1p.name)
             m = re.match(pattern, fq_illumina_1p.name)
             if not m:
                 continue

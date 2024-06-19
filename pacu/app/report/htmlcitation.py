@@ -26,8 +26,6 @@ class HtmlCitation(HtmlBase):
             'jour': self._process_journal_citation,
             'book': self._process_book_citation}
         try:
-            import pprint
-            pprint.pprint(citation_data['type_of_reference'].lower())
             citation_processor[citation_data['type_of_reference'].lower()]()
         except KeyError as err:
             raise KeyError(
