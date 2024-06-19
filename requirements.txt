@@ -4,6 +4,7 @@ UpSetPlot==0.8.0
 beautifulsoup4==4.11.1
 biopython==1.79
 matplotlib==3.7.1
+numpy==1.26.4
 pandas==2.1.0
 pyvcf3==1.0.3
 snakemake==7.18.2
