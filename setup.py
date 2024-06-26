@@ -1,12 +1,19 @@
+from pathlib import Path
+
 from setuptools import setup, find_packages
 
 from pacu.version import __version__
 
+with open(Path(__file__).parent / 'README.md', encoding='utf-8') as handle:
+    long_description = handle.read()
+
 
 setup(
-    name='PACU',
+    name='pacu_snp',
     version=__version__,
     description='Workflow for whole genome sequencing based phylogeny of Illumina and ONT data.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/BioinformaticsPlatformWIV-ISP/PACU/',
     author='Bert Bogaerts',
     author_email='bioit@sciensano.be',
@@ -22,16 +29,18 @@ setup(
     packages=find_packages() + ['pacu.resources'],
     python_requires='>=3',
     install_requires=[
-        # 'PyVCF==0.6.8',
-        # 'PyYAML==6.0',
-        # 'UpSetPlot==0.8.0',
-        # 'beautifulsoup4==4.11.1',
-        # 'biopython==1.79',
-        # 'matplotlib==3.7.1',
-        # 'pandas==2.1.0',
-        # 'pyvcf3==1.0.3',
-        # 'snakemake==7.18.2',
-        # 'yattag==1.14.0'
+        'PuLP==2.7.0',
+        'PyYAML>=6.0',
+        'UpSetPlot>=0.8.0',
+        'beautifulsoup4>=4.11.1',
+        'biopython',
+        'matplotlib>=3.7.1',
+        'numpy>=1.26.4',
+        'pandas>=2.1.0',
+        'pytest>=8.2.2',
+        'pyvcf3>=1.0.3',
+        'snakemake==7.18.2',
+        'yattag>=1.14.0'
     ],
     package_data={
         'pacu': [
