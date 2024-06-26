@@ -11,7 +11,7 @@ Illumina and ONT reads).
 ## INSTALLATION
 
 ```
-git clone https://github.com/BioinformaticsPlatformWIV-ISP/PACU.git
+pip install pacu_snp
 ```
 
 The PACU dependencies can be installed via Conda or manually.
@@ -24,7 +24,7 @@ The PACU dependencies can be installed via Conda or manually.
 cd PACU/
 mamba env create -f environment.yml;
 conda activate pacu_env;
-pip install .;
+pip install pacu_snp;
 ```
 
 **Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
@@ -54,10 +54,9 @@ The required Python packages are listed in the `requirements.txt` file.
 Python 3.9 or 3.10 is recommended for a manual installation.
 
 ```
-virtualenv pacu_env --python=python3.9
+virtualenv pacu_env --python=python3.10;
 . pacu_env/bin/activate;
-pip install -r requirements.txt 
-pip install .;
+pip install pacu_snp;
 ```
 
 Note: Make sure you are in the directory containing the `setup.py` script when running the `pip install` command.
