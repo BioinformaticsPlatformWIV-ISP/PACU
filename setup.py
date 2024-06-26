@@ -63,6 +63,7 @@ setup(
     entry_points={
         'console_scripts': [
             'PACU=pacu.run_pacu:main',
+            'PACU_map=pacu.map_to_ref:main',
         ],
     }
 )

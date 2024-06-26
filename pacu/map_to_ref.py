@@ -293,8 +293,15 @@ class MapToRef(object):
                 return workflowutils.determine_name_from_fq(fq_illumina_1p=Path(self._args.fastq_illumina_names[0]))
             return workflowutils.determine_name_from_fq(fq_illumina_1p=self._args.fastq_illumina[0])
 
+def main() -> None:
+    """
+    Wrapper around the main script.
+    :return: None
+    """
+    initialize_logging()
+    map_to_ref = MapToRef()
+    map_to_ref.run()
+
 
 if __name__ == '__main__':
-    initialize_logging()
-    main = MapToRef()
-    main.run()
+    main()

@@ -64,14 +64,12 @@ Note: Make sure you are in the directory containing the `setup.py` script when r
 ## USAGE
 
 ```
-usage: run_pacu.py [-h] [--ilmn-in ILMN_IN] [--ont-in ONT_IN] --ref-fasta REF_FASTA [--ref-bed REF_BED]
-                   [--dir-working DIR_WORKING] [--output OUTPUT] [--calling-method {clair3,samtools}] [--include-ref]
-                   [--min-snp-af MIN_SNP_AF] [--min-snp-qual MIN_SNP_QUAL] [--min-snp-depth MIN_SNP_DEPTH]
-                   [--min-snp-dist MIN_SNP_DIST] [--min-global-depth MIN_GLOBAL_DEPTH] [--min-mq-depth MIN_MQ_DEPTH]
-                   [--bcftools-filt-af1] [--image-width IMAGE_WIDTH] [--image-height IMAGE_HEIGHT] [--threads THREADS]
-                   [--version]
+usage: PACU [-h] [--ilmn-in ILMN_IN] [--ont-in ONT_IN] --ref-fasta REF_FASTA [--ref-bed REF_BED] [--dir-working DIR_WORKING] --output OUTPUT
+            [--output-html OUTPUT_HTML] [--use-mega] [--include-ref] [--min-snp-af MIN_SNP_AF] [--min-snp-qual MIN_SNP_QUAL]
+            [--min-snp-depth MIN_SNP_DEPTH] [--min-snp-dist MIN_SNP_DIST] [--min-global-depth MIN_GLOBAL_DEPTH] [--min-mq-depth MIN_MQ_DEPTH]
+            [--bcftools-filt-af1] [--image-width IMAGE_WIDTH] [--image-height IMAGE_HEIGHT] [--threads THREADS] [--version]
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --ilmn-in ILMN_IN     Directory with Illumina input BAM files
   --ont-in ONT_IN       Directory with ONT input BAM files
@@ -81,7 +79,9 @@ optional arguments:
   --dir-working DIR_WORKING
                         Working directory
   --output OUTPUT       Output directory
-  --calling-method {clair3,samtools}
+  --output-html OUTPUT_HTML
+                        Output report name
+  --use-mega            If set, MEGA is used for the construction of the phylogeny (instead of IQ-TREE)
   --include-ref         If set, the reference genome is included in the phylogeny
   --min-snp-af MIN_SNP_AF
                         Minimum allele frequency for variants
@@ -112,7 +112,7 @@ The PACU workflow requires BAM files as input with reads mapped to a reference g
 Illumina data can be provided using the `--ilmn-in` option, ONT data can be provided using the `--ont-in` option.
 
 ```
-run_pacu.py \
+PACU \
     --ilmn-in in/ilmn/ \
     --ont-in in/ont/ \
     --ref-fasta ref.fasta \
@@ -129,7 +129,7 @@ trimming before mapping.
 
 *Illumina data*
 ```
-map_to_ref.py \
+PACU_map \
     --ref-fasta genome.fasta \
     --data-type illumina \
     --fastq-illumina reads_1.fastq.gz reads_2.fastq.gz \
@@ -138,7 +138,7 @@ map_to_ref.py \
 ```
 *ONT data*
 ```
-map_to_ref.py \
+PACU_map \
     --ref-fasta genome.fasta \
     --data-type ont \
     --fastq-ont reads_ont.fastq.gz \
