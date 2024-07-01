@@ -44,6 +44,24 @@ class TestWorkflow(unittest.TestCase):
             ])
             workflow.run()
 
+    def test_snp_workflow_no_gubbins(self) -> None:
+        """
+        Tests the SNP workflow with mixed input (Illumina + R10) without the 'gubbins' step.
+        """
+        with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
+            dir_ = Path('/scratch/temp/tmp-wf')
+            dir_out = Path(dir_, 'output')
+            workflow = PACU([
+                '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
+                '--ilmn-in', str(files('pacu').joinpath('resources/testdata/bam/ilmn')),
+                '--ont-in', str(files('pacu').joinpath('resources/testdata/bam/ont')),
+                '--skip-gubbins',
+                '--dir-working', str(dir_),
+                '--output', str(dir_out),
+                '--threads', '8'
+            ])
+            workflow.run()
+
 
 if __name__ == '__main__':
     unittest.main()

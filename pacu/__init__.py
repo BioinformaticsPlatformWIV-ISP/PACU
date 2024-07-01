@@ -75,6 +75,7 @@ class PACU(object):
         parser.add_argument('--min-snp-qual', type=int, default=25, help='Minimum SNP quality')
         parser.add_argument('--min-snp-depth', type=int, default=5, help='Minimum SNP depth')
         parser.add_argument('--min-snp-dist', type=int, default=10, help='Minimum distance between SNPs')
+        parser.add_argument('--skip-gubbins', action='store_true', help='If set, gubbins is skipped')
         # parser.add_argument('--min-sb-pv', type=float, default=0, help='Minimum P-value for strand bias')
         parser.add_argument(
             '--min-global-depth', type=int, default=5,
@@ -129,6 +130,7 @@ class PACU(object):
                 'width': self._args.image_width,
                 'height': self._args.image_height
             },
+            'skip_gubbins': self._args.skip_gubbins,
             'include_ref': self._args.include_ref,
             'input': input_dict,
             'phylogeny_method': 'mega' if self._args.use_mega else 'iqtree',
@@ -155,8 +157,9 @@ class PACU(object):
             'gubbins': 'ml gubbins; gubbins -h',
             'snp-dists': 'snp-dists -v',
             'figtree': 'figtree -help',
-
         }
+        if self._args.skip_gubbins:
+            commands.pop('gubbins')
         if self._args.use_mega:
             commands['MEGA'] = 'megacc --version'
         else:

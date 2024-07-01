@@ -278,6 +278,34 @@ rule gubbins_to_bed:
         if not command.exit_code == 0:
             raise RuntimeError(f"Error creating BED file: {command.stderr}")
 
+rule gubbins_empty_bed:
+    """
+    Creates an empty BED file when gubbins is disabled. 
+    """
+    output:
+        BED = 'gubbins/empty.bed'
+    shell:
+        """
+        touch {output.BED};
+        """
+
+rule gubbins_select_bed:
+    """
+    Rule that selects the BED file for gubbins dependent on the pipeline setting.
+    """
+    input:
+        BED_gubbins = rules.gubbins_to_bed.output.BED if config.get('skip_gubbins', False) is False else [],
+        BED_empty = rules.gubbins_empty_bed.output.BED if config.get('skip_gubbins', False) is True else []
+    output:
+        BED = 'gubbins/selected.bed'
+    params:
+        skip_gubbins = config.get('skip_gubbins', False)
+    run:
+        if len(input.BED_gubbins) > 0:
+            shutil.copyfile(input.BED_gubbins, output.BED)
+        else:
+            shutil.copyfile(input.BED_empty, output.BED)
+
 rule region_filtering_collect_low_depth_regions:
     """
     Extracts the low coverage regions
@@ -335,7 +363,7 @@ rule region_filtering_merge_bed_files:
     Merges the BED files with phage regions and recombinant regions detected by Gubbins.
     """
     input:
-        BED_a = rules.gubbins_to_bed.output.BED,
+        BED_a = rules.gubbins_select_bed.output.BED,
         BED_b = config['reference']['bed_phages'],
         BED_c = rules.region_filtering_collect_low_depth_regions.output.BED
     output:
@@ -356,7 +384,7 @@ rule region_filtering_plot:
     input:
         FASTA = config['reference']['fasta'],
         BED_phages = config['reference']['bed_phages'],
-        BED_gubbins = rules.gubbins_to_bed.output.BED,
+        BED_gubbins = rules.gubbins_select_bed.output.BED,
         BED_depth = rules.region_filtering_collect_low_depth_regions.output.BED
     output:
         PNG = 'stats/region_filtering.png',
@@ -384,7 +412,7 @@ rule region_filtering_combine_stats:
     input:
         FASTA = config['reference']['fasta'],
         BED_phages = config['reference']['bed_phages'],
-        BED_gubbins = rules.gubbins_to_bed.output.BED,
+        BED_gubbins = rules.gubbins_select_bed.output.BED,
         BED_depth = rules.region_filtering_collect_low_depth_regions.output.BED,
         BED_merged = rules.region_filtering_merge_bed_files.output.BED
     output:
@@ -736,7 +764,7 @@ rule create_report:
         BED = [
             rules.region_filtering_collect_low_depth_regions.output.BED,
             rules.region_filtering_merge_bed_files.output.BED,
-            rules.gubbins_to_bed.output.BED]
+            rules.gubbins_select_bed.output.BED]
     output:
         HTML = Path(config['output']['html'])
     params:
