@@ -10,22 +10,9 @@ Illumina and ONT reads).
 
 ## INSTALLATION
 
-```
-pip install pacu_snp
-```
-
-The PACU dependencies can be installed via Conda or manually.
-
 ### CONDA installation
-
-**Tip**: It is recommended to use `mamba` to install the dependencies, but `conda` can also be used.
-
-```
-cd PACU/
-mamba env create -f environment.yml;
-conda activate pacu_env;
-pip install pacu_snp;
-```
+ 
+`conda install -c bioconda pacu_snp`
 
 **Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
 `IQ-Tree` can be used instead.
@@ -58,8 +45,6 @@ virtualenv pacu_env --python=python3.10;
 . pacu_env/bin/activate;
 pip install pacu_snp;
 ```
-
-Note: Make sure you are in the directory containing the `setup.py` script when running the `pip install` command.
 
 ## USAGE
 
