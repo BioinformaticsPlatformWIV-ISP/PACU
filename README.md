@@ -80,6 +80,7 @@ options:
                         Minimum depth for all samples to include positions in SNP analysis
   --min-mq-depth MIN_MQ_DEPTH
                         MQ cutoff for samtools depth
+  --skip-gubbins        If set, gubbins is skipped
   --bcftools-filt-af1   If enabled, allele frequency filtering also considers the VAF value
   --image-width IMAGE_WIDTH
                         Image width
