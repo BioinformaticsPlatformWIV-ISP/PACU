@@ -64,6 +64,7 @@ setup(
         'console_scripts': [
             'PACU=pacu.run_pacu:main',
             'PACU_map=pacu.map_to_ref:main',
+            'PACU_galaxy=pacu.galaxy:main',
         ],
     }
 )

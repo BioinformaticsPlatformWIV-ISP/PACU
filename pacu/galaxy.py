@@ -35,7 +35,11 @@ def _extract_dataset_name(bam_in: Path, name_orig: str) -> str:
     return workflowutils.sanitize_bam_input(name_orig)
 
 
-if __name__ == '__main__':
+def main() -> None:
+    """
+    Runs the main script.
+    :return: None
+    """
     initialize_logging()
     logger.info(f'Running PACU through Galaxy')
     args, unparsed_args = parse_galaxy_args()
@@ -79,3 +83,7 @@ if __name__ == '__main__':
     # Run the main script
     workflow = PACU(unparsed_args)
     workflow.run()
+
+
+if __name__ == '__main__':
+    main()
