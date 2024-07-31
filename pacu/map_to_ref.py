@@ -227,7 +227,7 @@ class MapToRef(object):
 
         # Other options
         parser.add_argument(
-            '--dir-working', type=Path, help='Working directory', required=True)
+            '--dir-working', type=Path, help='Working directory', default=Path.cwd())
         parser.add_argument('--trim', action='store_true', help='Trim reads prior to mapping')
         parser.add_argument('--output', required=True, type=Path, help='Output BAM file')
         parser.add_argument('--threads', type=int, default=4)
