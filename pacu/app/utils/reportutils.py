@@ -56,9 +56,11 @@ def create_parameter_section(config_: Dict[str, Any]) -> HtmlReportSection:
     """
     section = HtmlReportSection('Parameters')
     section.add_table([
-        ['Min. allele frequency:', f"{config_['filters']['min_af']:.2f}"],
-        ['Min. depth:', str(config_['filters']['min_depth'])],
+        ['Min. global depth:', f"{config_['depth']['min_depth']:.2f}"],
+        ['Min. SNP allele frequency:', f"{config_['filters']['min_af']:.2f}"],
+        ['Min. SNP depth:', str(config_['filters']['min_depth'])],
         ['Min. SNP quality:', str(config_['filters']['min_qual'])],
+        ['Min. SNP distance:', str(config_['filters']['min_dist'])],
     ], table_attributes=[('class', 'information')])
     return section
 
@@ -142,11 +144,12 @@ def create_variant_calling_section(path_stats: Path) -> HtmlReportSection:
     return section
 
 
-def create_region_filtering_section(path_stats: Path, path_png: Path) -> HtmlReportSection:
+def create_region_filtering_section(path_stats: Path, path_png: Path, skip_gubbins: bool = False) -> HtmlReportSection:
     """
     Creates the section with the region filtering results.
     :param path_stats: Path to TSV stats file
     :param path_png: Visualization of region overlap
+    :param skip_gubbins: Boolean to indicate whether Gubbins was skipped.
     :return: Section
     """
     section = HtmlReportSection('Region filtering')
@@ -163,7 +166,10 @@ def create_region_filtering_section(path_stats: Path, path_png: Path) -> HtmlRep
         [col['fmt'](row[col['key']]) if col.get('fmt') is not None else row[col['key']] for col in columns] for
         row in data_regions.to_dict('records')], [c['header'] for c in columns], [('class', 'data')])
 
-    # Add path to image
+    if skip_gubbins:
+        section.add_warning_message('Gubbins was disabled')
+
+    # Add the path to the image
     relative_path_png = Path(path_png.name)
     section.add_file(path_png, relative_path_png)
     section.add_line_break()

@@ -787,7 +787,7 @@ rule create_report:
             Path(input.TSV_depth), Path(params.config['reference']['fasta'])))
         report.add_html_object(reportutils.create_variant_calling_section(Path(input.TSV_stats)))
         section_region_filt = reportutils.create_region_filtering_section(
-            Path(input.TSV_regions), Path(input.PNG_regions))
+            Path(input.TSV_regions), Path(input.PNG_regions), config.get('skip_gubbins', False))
         report.add_html_object(section_region_filt)
         section_region_filt.copy_files(Path(params.dir_out))
         with open(input.JSON) as handle:
