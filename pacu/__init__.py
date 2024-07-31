@@ -1,4 +1,5 @@
 import argparse
+import shutil
 from importlib.resources import files
 from pathlib import Path
 from typing import Optional, Sequence
@@ -41,10 +42,15 @@ class PACU(object):
             path_bed.touch()
             logger.info(f'Creating empty phage BED file: {path_bed}')
             self._args.ref_bed = path_bed
+        # Run Snakemake workflow
         path_config = self.__create_config_file()
         snakemakeutils.run_snakemake(
             path_snakefile, path_config, [self._path_html_out], self._args.dir_working, self._args.threads)
         logger.info(f'Workflow finished successfully, output available in: {self._args.output}')
+
+        # Copy the log file if it exists
+        if (self._args.dir_working / 'pacu.log').exists():
+            shutil.copyfile(self._args.dir_working / 'pacu.log', self._args.output / 'pacu.log')
 
     @staticmethod
     def _parse_arguments(args: Optional[Sequence[str]]) -> argparse.Namespace:
