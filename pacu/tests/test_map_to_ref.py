@@ -70,7 +70,7 @@ class TestMapToRef(unittest.TestCase):
                 '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
                 '--read-type', 'ont',
                 '--fastq-ont',
-                str(files('pacu').joinpath('resources/testdata/fastq/TIAC1151-ont.gz')),
+                str(files('pacu').joinpath('resources/testdata/fastq/TIAC1151-ont.fastq.gz')),
                 '--output', str(path_out),
                 '--dir-working', dir_,
                 '--threads', '4'
@@ -92,7 +92,7 @@ class TestMapToRef(unittest.TestCase):
                 '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),
                 '--read-type', 'ont',
                 '--fastq-ont',
-                str(files('pacu').joinpath('resources/testdata/fastq/TIAC1151-ont.gz')),
+                str(files('pacu').joinpath('resources/testdata/fastq/TIAC1151-ont.fastq.gz')),
                 '--trim',
                 '--output', str(path_out),
                 '--dir-working', dir_,

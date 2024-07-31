@@ -30,6 +30,7 @@ class MapToRef(object):
         logger.info(f'Starting mapping helper ({self._args.read_type})')
         self._check_dependencies()
         self._rename_galaxy_input()
+        path_bam_temp = Path(self._args.dir_working, f'{self._name}.bam')
 
         # Illumina reads
         if self._args.read_type == 'illumina':
@@ -38,17 +39,15 @@ class MapToRef(object):
                 fq_dict = self._illumina_trim()
             else:
                 fq_dict = {'1P': self._args.fastq_illumina[0], '2P': self._args.fastq_illumina[1]}
-            self._illumina_map(fq_dict, path_ref, self._args.output)
+            self._illumina_map(fq_dict, path_ref, path_bam_temp)
 
         # ONT reads
         else:
             path_ref = self._ont_idx_ref()
             path_fq = self._ont_trim() if self._args.trim else self._args.fastq_ont
-            self._ont_map(path_fq, path_ref, self._args.output)
+            self._ont_map(path_fq, path_ref, path_bam_temp)
 
         # Add a custom tag with the original dataset name (used for Galaxy)
-        path_bam_temp = Path(self._args.dir_working, 'tmp.bam')
-        self._args.output.rename(path_bam_temp)
         bamutils.add_custom_tag('PACU_name', self._name, path_bam_temp, self._args.output)
 
     @property
