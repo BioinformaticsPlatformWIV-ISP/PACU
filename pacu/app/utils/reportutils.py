@@ -56,12 +56,12 @@ def create_parameter_section(config_: Dict[str, Any]) -> HtmlReportSection:
     """
     section = HtmlReportSection('Parameters')
     section.add_table([
-        ['Min. global depth:', f"{config_['depth']['min_depth']:.2f}"],
-        ['Min. SNP allele frequency:', f"{config_['filters']['min_af']:.2f}"],
-        ['Min. SNP depth:', str(config_['filters']['min_depth'])],
-        ['Min. SNP quality:', str(config_['filters']['min_qual'])],
-        ['Min. SNP distance:', str(config_['filters']['min_dist'])],
-    ], table_attributes=[('class', 'information')])
+        ['Min. global depth <small>(--min-global-depth)</small>', f"{config_['depth']['min_depth']:.2f}"],
+        ['Min. SNP allele frequency <small>(--min-snp-af)</small>', f"{config_['filters']['min_af']:.2f}"],
+        ['Min. SNP depth <small>(--min-snp-depth)</small>', str(config_['filters']['min_depth'])],
+        ['Min. SNP quality <small>(--min-snp-qual)</small>', str(config_['filters']['min_qual'])],
+        ['Min. SNP distance <small>(--min-snp-dist)</small>', str(config_['filters']['min_dist'])],
+    ], column_names=['Parameter', 'Value'], table_attributes=[('class', 'data')])
     return section
 
 
@@ -135,7 +135,8 @@ def create_variant_calling_section(path_stats: Path) -> HtmlReportSection:
         {'key': 'key', 'header': 'Isolate'},
         {'key': 'nb_variants', 'header': 'Number of variants', 'fmt': lambda x: f'{x:,}'},
         {'key': 'nb_variants_filtered', 'header': 'Number of variants (Filtered)', 'fmt': lambda x: f'{x:,}'},
-        {'key': 'perc_passed', 'header': '% passing filtering', 'fmt': lambda x: f'{x:.2f}'},
+        {'key': 'perc_passed', 'header': '% passing filtering',
+         'fmt': lambda x: f'{x:.2f}' if not pd.isna(x) else 'n/a'},
     ]
     # noinspection PyCallingNonCallable
     section.add_table([
@@ -167,7 +168,7 @@ def create_region_filtering_section(path_stats: Path, path_png: Path, skip_gubbi
         row in data_regions.to_dict('records')], [c['header'] for c in columns], [('class', 'data')])
 
     if skip_gubbins:
-        section.add_warning_message('Gubbins was disabled')
+        section.add_warning_message('Gubbins was disabled.')
 
     # Add the path to the image
     relative_path_png = Path(path_png.name)
