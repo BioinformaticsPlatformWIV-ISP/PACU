@@ -1,5 +1,4 @@
 import re
-import unittest
 from pathlib import Path
 from typing import Union
 
@@ -38,7 +37,3 @@ def extract_selected_model(stdout: str) -> Union[str, None]:
             continue
         return m.group(1)
     logger.warning(f'Cannot extract selected model from IQ-TREE output')
-
-
-if __name__ == '__main__':
-    unittest.main()
