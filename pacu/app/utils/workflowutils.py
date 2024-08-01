@@ -246,7 +246,7 @@ def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> 
                 continue
             return m.group(1)
         logger.warning(f'FASTQ input format does not match known formats')
-        return re.sub('(fastq|fq)(\.gz)', '', fq_illumina_1p.name)
+        return re.sub(r'.(fastq|fq)(\.gz)?', '', fq_illumina_1p.name)
     else:
         raise ValueError('No FASTQ file provided')
 
