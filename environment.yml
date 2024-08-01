@@ -6,6 +6,7 @@ channels:
 dependencies:
   - bcftools=1.17
   - beautifulsoup4=4.12.2
+  - bedtools >=2.31.0
   - bowtie2=2.5.1
   - figtree=1.4.4
   - gubbins=3.3.1
