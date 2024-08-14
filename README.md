@@ -117,7 +117,7 @@ trimming before mapping.
 ```
 PACU_map \
     --ref-fasta genome.fasta \
-    --data-type illumina \
+    --read-type illumina \
     --fastq-illumina reads_1.fastq.gz reads_2.fastq.gz \
     --output mapped.bam \
     --threads 4
@@ -126,7 +126,7 @@ PACU_map \
 ```
 PACU_map \
     --ref-fasta genome.fasta \
-    --data-type ont \
+    --read-type ont \
     --fastq-ont reads_ont.fastq.gz \
     --output mapped.bam \
     --threads 4
