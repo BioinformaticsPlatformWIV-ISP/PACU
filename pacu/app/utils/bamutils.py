@@ -29,7 +29,7 @@ def add_custom_tag(name: str, value: str, bam_in: Path, bam_out: Path) -> None:
             handle.write(header)
 
         # Create output BAM file with custom tag
-        command = Command(f'samtools reheader {path_header_updated} {bam_in} > {bam_out}')
+        command = Command(f'samtools reheader {path_header_updated} {bam_in.absolute()} > {bam_out.absolute()}')
         command.run(Path(dir_temp))
         if not command.exit_code == 0:
             raise RuntimeError(f'Error replacing BAM header: {command.stderr}')
