@@ -12,7 +12,13 @@ Illumina and ONT reads).
 
 ### CONDA installation
  
-`conda install -c bioconda pacu_snp`
+`conda install -c bioconda -c conda-forge pacu_snp`
+
+If the above command  fails, PACU can be installed in a new environment using the following commands:
+```
+conda create -n pacu_snp python=3.10
+conda install bioconda::pacu_snp -c bioconda -c conda-forge
+```
 
 **Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
 `IQ-Tree` can be used instead.
