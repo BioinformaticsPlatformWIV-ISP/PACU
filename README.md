@@ -17,6 +17,7 @@ Illumina and ONT reads).
 If the above command  fails, PACU can be installed in a new environment using the following commands:
 ```
 conda create -n pacu_snp python=3.10
+conda activate pacu_snp
 conda install bioconda::pacu_snp -c bioconda -c conda-forge
 ```
 
