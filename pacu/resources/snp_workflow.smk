@@ -582,16 +582,18 @@ rule create_snp_matrix:
     input:
         VCF = expand(rules.variant_filtering_distance.output.VCF, key=config['input'].keys())
     output:
-        FASTA = 'tree/snp_matrix.fasta'
+        FASTA = 'tree/snp_matrix.fasta',
+        TSV = 'combined/snp_positions.tsv'
     params:
         include_ref = False,
         names = list(config['input'].keys())
     run:
         from pacu.app.utils import snpmatrixutils
-
-        # noinspection PyTypeChecker
         snpmatrixutils.create_snp_matrix(
-            [Path(x) for x in input.VCF], params.names, Path(output.FASTA).absolute(), params.include_ref)
+            paths_vcf=[Path(x) for x in input.VCF],
+            names=params.names,
+            path_out=Path(output.FASTA).absolute(), path_tsv=Path(output.TSV).absolute(),
+            include_ref=params.include_ref)
 
 rule mega_model_selection:
     """
@@ -752,6 +754,7 @@ rule create_report:
         TSV_stats = rules.combine_variant_calling_stats.output.TSV,
         TSV_depth = rules.samtools_depth_combine.output.TSV,
         TSV_regions = rules.region_filtering_combine_stats.output.TSV,
+        TSV_snp_pos = rules.create_snp_matrix.output.TSV,
         TSV_dist = rules.snp_dists_sort.output.TSV,
         # Tree
         FASTA = rules.create_snp_matrix.output.FASTA,
@@ -792,7 +795,8 @@ rule create_report:
         section_region_filt.copy_files(Path(params.dir_out))
         with open(input.JSON) as handle:
             model = json.load(handle)['model']
-        section_tree = reportutils.create_tree_section(Path(input.NWK), Path(input.PNG), Path(input.FASTA), model)
+        section_tree = reportutils.create_tree_section(Path(input.NWK), Path(input.PNG), Path(input.FASTA),
+            Path(input.TSV_snp_pos), model)
         report.add_html_object(section_tree)
         section_tree.copy_files(Path(params.dir_out))
         report.add_html_object(reportutils.create_snp_distances_section(Path(input.TSV_dist)))

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
+import pandas as pd
 import vcf
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -12,7 +13,7 @@ from vcf.model import _Record as VCFRecord
 from pacu.app.utils.loggingutils import logger
 
 
-@dataclass(unsafe_hash=True, frozen=True)
+@dataclass(unsafe_hash=True, frozen=True, order=True)
 class SNPPosition:
     contig: str
     position: int
@@ -40,8 +41,8 @@ def parse_vcf_file(path_vcf: Path, include_filtered: bool) -> List[VCFRecord]:
     return vcf_records
 
 
-def __get_nucleotides_per_position(paths_vcf: List[Path], names: List[str], include_filtered: bool = False) -> (
-        Dict)[SNPPosition, Dict[str, str]]:
+def __get_nucleotides_per_position(paths_vcf: List[Path], names: List[str], include_filtered: bool = False) -> \
+        Dict[SNPPosition, Dict[str, str]]:
     """
     Returns a dictionary with the nucleotide for each sample at each variant position.
     :param paths_vcf: List of input VCF files
@@ -60,23 +61,33 @@ def __get_nucleotides_per_position(paths_vcf: List[Path], names: List[str], incl
                 nucl_by_position[position][name] = str(record.ALT[0])
 
     # Remove positions with only N
-    nucl_by_position = {pos: nucl for pos, nucl in nucl_by_position.items() if not all(
+    nucl_by_position = {pos: nucl for pos, nucl in sorted(nucl_by_position.items()) if not all(
         [x == 'N' for x in nucl.values()])}
 
     logger.info(f"{len(nucl_by_position):,} SNP positions found across all samples")
     return nucl_by_position
 
 
-def create_snp_matrix(paths_vcf: List[Path], names: List[str], path_out: Path, include_ref: bool = False) -> None:
+def create_snp_matrix(paths_vcf: List[Path], names: List[str], path_out: Path, path_tsv: Optional[Path] = None,
+                      include_ref: bool = False) -> None:
     """
     Creates an SNP matrix from the input VCF file.
     :param paths_vcf: List of input VCF files
     :param names: Isolate names
     :param path_out: Output path
+    :param path_tsv: TSV file with SNP positions
     :param include_ref: If True, the reference genome is included
     :return: None
     """
     nucl_by_pos = __get_nucleotides_per_position(paths_vcf, names, False)
+
+    # Export TSV file with SNP positions
+    if path_tsv is not None:
+        data_positions = pd.DataFrame([{'seq_id': pos.contig, 'position': pos.position} for pos in nucl_by_pos.keys()])
+        data_positions.to_csv(path_tsv, sep='\t', index=False)
+        logger.info(f'SNP positions exported to: {path_tsv}')
+
+    # Create FASTA records
     seq_by_sample_name = {name: [] for name in names}
     if include_ref is True:
         seq_by_sample_name['reference'] = []
