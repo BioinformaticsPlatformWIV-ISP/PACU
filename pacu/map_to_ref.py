@@ -57,8 +57,8 @@ class MapToRef(object):
         :return: Reference name
         """
         if self._args.ref_fasta_name is None:
-            return self._args.ref_fasta.name
-        return self._args.ref_fasta_name
+            return workflowutils.sanitize_input_name(self._args.ref_fasta.name, 'fasta')
+        return workflowutils.sanitize_input_name(self._args.ref_fasta_name, 'fasta')
 
     def __symlink_ref_fasta(self, dir_: Path) -> Path:
         """

@@ -32,7 +32,7 @@ def _extract_dataset_name(bam_in: Path, name_orig: str) -> str:
         return bamutils.read_custom_tag(bam_in, 'PACU_name')
     except ValueError:
         logger.debug(f"'PACU_name' not found in BAM header: {name_orig}")
-    return workflowutils.sanitize_bam_input(name_orig)
+    return workflowutils.sanitize_input_name(name_orig, 'bam')
 
 
 def main() -> None:
@@ -49,7 +49,7 @@ def main() -> None:
     dir_in.mkdir(exist_ok=True)
 
     # Symlink the reference genome
-    path_ref_link = dir_in / args.ref_fasta_name
+    path_ref_link = dir_in / workflowutils.sanitize_input_name(args.ref_fasta_name, 'fasta')
     if not path_ref_link.exists():
         path_ref_link.symlink_to(Path(args.ref_fasta))
     unparsed_args.extend(['--ref-fasta', str(path_ref_link.absolute())])
