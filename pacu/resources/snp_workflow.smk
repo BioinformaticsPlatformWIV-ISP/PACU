@@ -72,13 +72,27 @@ rule samtools_depth_combine:
         data_out = pd.DataFrame(records_out)
         data_out.to_csv(output.TSV, sep='\t', index=False)
 
+rule variant_calling_faidx_ref:
+    """
+    Creates a FASTA index for the reference genome.
+    """
+    input:
+        FASTA = str(config['reference']['fasta'])
+    output:
+        FASTA = f"ref/{Path(config['reference']['fasta']).name}"
+    shell:
+        """
+        cp {input.FASTA} {output.FASTA}
+        samtools faidx {output.FASTA}
+        """
+
 rule variant_calling_bcftools_mpileup:
     """
     Creates a pileup using bcftools based on a BAM input file.
     """
     input:
         BAM = lambda wildcards: str(config['input'][wildcards.key]['bam']),
-        FASTA = str(config['reference']['fasta'])
+        FASTA = rules.variant_calling_faidx_ref.output.FASTA
     output:
         VCF_GZ = 'variant_calling/{key}/pileup_{key}.vcf.gz'
     params:
@@ -761,8 +775,8 @@ rule create_report:
         NWK = rules.select_tree.output.NWK,
         JSON = rules.select_tree.output.JSON,
         PNG = rules.visualize_tree.output.PNG,
-        # Variant calling & filtering
-        VCF = expand(rules.variant_filtering_distance.output.VCF,key=config['input'].keys()),
+        # Variant calling and filtering
+        VCF = expand(rules.variant_filtering_distance.output.VCF, key=config['input'].keys()),
         PNG_regions = rules.region_filtering_plot.output.PNG,
         BED = [
             rules.region_filtering_collect_low_depth_regions.output.BED,
