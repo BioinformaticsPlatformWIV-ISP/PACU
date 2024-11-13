@@ -61,7 +61,7 @@ def main() -> None:
         dir_bam.mkdir(exist_ok=True)
         for path_bam, galaxy_name in args.bam_ilmn:
             try:
-                basename = f'{_extract_dataset_name(Path(path_bam), galaxy_name)}.bam'
+                basename = _extract_dataset_name(Path(path_bam), galaxy_name)
                 (dir_bam / basename).symlink_to(path_bam)
             except FileExistsError:
                 logger.debug(f"Symlink for '{galaxy_name}' already exists")
@@ -74,7 +74,7 @@ def main() -> None:
         dir_bam.mkdir(exist_ok=True)
         for path_bam, galaxy_name in args.bam_ont:
             try:
-                basename = f'{_extract_dataset_name(Path(path_bam), galaxy_name)}.bam'
+                basename = _extract_dataset_name(Path(path_bam), galaxy_name)
                 (dir_bam / basename).symlink_to(path_bam)
             except FileExistsError:
                 logger.debug(f"Symlink for '{galaxy_name}' already exists")
