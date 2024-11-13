@@ -49,7 +49,6 @@ class TestWorkflow(unittest.TestCase):
         Tests the SNP workflow with mixed input (Illumina + R10) without the 'gubbins' step.
         """
         with tempfile.TemporaryDirectory(prefix='pacu') as dir_:
-            dir_ = Path('/scratch/temp/tmp-wf')
             dir_out = Path(dir_, 'output')
             workflow = PACU([
                 '--ref-fasta', str(files('pacu').joinpath('resources/testdata/NC_002695.2-subset.fasta')),

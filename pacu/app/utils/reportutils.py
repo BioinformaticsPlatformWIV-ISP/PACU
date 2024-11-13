@@ -177,22 +177,29 @@ def create_region_filtering_section(path_stats: Path, path_png: Path, skip_gubbi
     return section
 
 
-def create_tree_section(path_nwk: Path, path_png: Path, path_snp_matrix: Path, model_name: str) -> HtmlReportSection:
+def create_tree_section(path_nwk: Path, path_png: Path, path_snp_matrix: Path, path_snp_pos: Path,
+                        model_name: str) -> HtmlReportSection:
     """
     Creates the section with the visualization of the tree.
     :param path_nwk: Newick tree
     :param path_png: Tree visualization
     :param path_snp_matrix: SNP matrix
+    :param path_snp_pos: Path to TSV file with SNP positions
     :param model_name: Name of the model used
     :return: Section
     """
     section = HtmlReportSection('Phylogeny')
 
     # Add SNP matrix
-    relative_path_snp_matrix = Path(path_snp_matrix.name)
+    relative_path_snp_matrix = Path('snp_matrix', path_snp_matrix.name)
+    relative_path_snp_pos = Path('snp_matrix', path_snp_pos.name)
     section.add_header('SNP matrix', 4)
-    section.add_link_to_file('Download (FASTA)', relative_path_snp_matrix)
+    section.add_table([
+        ['SNP matrix', HtmlTableCell('Download (FASTA)', link=str(relative_path_snp_matrix))],
+        ['SNP positions', HtmlTableCell('Download (TSV)', link=str(relative_path_snp_pos))]
+    ], ['File', 'Download'], [('class', 'data')])
     section.add_file(path_snp_matrix, relative_path_snp_matrix)
+    section.add_file(path_snp_pos, relative_path_snp_pos)
 
     # Add visualization
     section.add_header('Tree', 4)
