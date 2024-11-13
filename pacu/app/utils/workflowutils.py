@@ -213,15 +213,17 @@ def plot_newick_phylogeny(path_nwk: Path, path_out: Path, width: int = 600, heig
         logger.info(f'Visualization exported to: {path_out}')
 
 
-def sanitize_bam_input(name: str) -> str:
+def sanitize_input_name(name: str, extension: str) -> str:
     """
-    Sanitizes the BAM input file name.
+    Sanitizes the input file name.
     :param name: Name
+    :param extension: Expected file extension (e.g., 'bam' or 'fasta')
     :return: None
     """
-    invalid_chars = '/!@#$'
-    if not name.endswith('.bam'):
-        return f'{name}.bam'
+    invalid_chars = '/!@#$\\'
+    name = name.replace(' ', '_')
+    if not name.endswith(f'.{extension}'):
+        return f'{name}.{extension}'
     return ''.join(c for c in name if c not in invalid_chars)
 
 
@@ -245,7 +247,8 @@ def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> 
             if not m:
                 continue
             return m.group(1)
-        logger.warning(f'FASTQ input format does not match known formats')
+        logger.warning(
+            'The input FASTQ filename does not match any of the supported formats for sample name determination')
         return re.sub(r'.(fastq|fq)(\.gz)?', '', fq_illumina_1p.name)
     else:
         raise ValueError('No FASTQ file provided')
