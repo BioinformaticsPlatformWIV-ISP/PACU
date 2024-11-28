@@ -223,7 +223,7 @@ class MapToRef(object):
         # FASTA input
         parser.add_argument('--ref-fasta', required=True, help='Reference FASTA file', type=Path)
         parser.add_argument(
-            '--ref-fasta-name',  type=Path, help='Original FASTA file name (used for Galaxy)')
+            '--ref-fasta-name',  type=str, help='Original FASTA file name (used for Galaxy)')
 
         # Other options
         parser.add_argument(
