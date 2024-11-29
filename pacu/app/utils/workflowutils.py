@@ -229,7 +229,8 @@ def sanitize_input_name(name: str, extension: str) -> str:
 
 PATTERNS_FQ_PE = [
     r'(.*)_1P?\.(fastq|fq)(\.gz)?',
-    r'(.*)_L\d+_R1_\d+\.(fastq|fq)(\.gz)?'
+    r'(.*)_L\d+_R1_\d+\.(fastq|fq)(\.gz)?',
+    r'(.*)_R1.(fastq|fq)(\.gz)?',
 ]
 
 def determine_name_from_fq(fq_ont: Path = None, fq_illumina_1p: Path = None) -> str:

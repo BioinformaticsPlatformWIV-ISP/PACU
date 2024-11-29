@@ -56,6 +56,10 @@ class TestWorkflowUtils(unittest.TestCase):
             fq_illumina_1p=Path('/path/to/unknown_pattern.fastq')), 'unknown_pattern')
         self.assertEqual(workflowutils.determine_name_from_fq(
             fq_illumina_1p=Path('/path/to/unknown_pattern.fastq.gz')), 'unknown_pattern')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_R1.fq')), 'reads')
+        self.assertEqual(workflowutils.determine_name_from_fq(
+            fq_illumina_1p=Path('/path/to/reads_R1.fastq.gz')), 'reads')
 
 
 if __name__ == '__main__':
