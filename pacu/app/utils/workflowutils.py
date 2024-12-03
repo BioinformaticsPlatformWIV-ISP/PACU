@@ -221,9 +221,19 @@ def sanitize_input_name(name: str, extension: str) -> str:
     :return: None
     """
     invalid_chars = '/!@#$\\'
+
+    # Replace spaces by dashes
     name = name.replace(' ', '_')
+
+    # Avoid double dot before the extension
+    if name.endswith('.'):
+        name = name[:-1]
+
+    # Add extension
     if not name.endswith(f'.{extension}'):
         return f'{name}.{extension}'
+
+    # Return sample name without invalid characters
     return ''.join(c for c in name if c not in invalid_chars)
 
 

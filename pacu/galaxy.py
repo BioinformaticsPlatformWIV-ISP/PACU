@@ -29,7 +29,7 @@ def _extract_dataset_name(bam_in: Path, name_orig: str) -> str:
     :return: Extracted name
     """
     try:
-        return bamutils.read_custom_tag(bam_in, 'PACU_name')
+        return workflowutils.sanitize_input_name(bamutils.read_custom_tag(bam_in, 'PACU_name'), 'bam')
     except ValueError:
         logger.debug(f"'PACU_name' not found in BAM header: {name_orig}")
     return workflowutils.sanitize_input_name(name_orig, 'bam')
