@@ -26,8 +26,7 @@ rule samtools_depth:
     threads: 1
     shell:
         """
-        # ml samtools/1.17;
-        samtools depth {input.BAM} -a --min-MQ {params.min_mq} > {output.TSV};
+        samtools depth {input.BAM} -a --min-MQ {params.min_mq} > {output.TSV}
         """
 
 rule samtools_depth_parse:
@@ -100,7 +99,7 @@ rule variant_calling_bcftools_mpileup:
     shell:
         """
         bcftools mpileup {input.BAM} --fasta-ref {input.FASTA} --output {output.VCF_GZ} --output-type v \
-            --config {params.profile};
+            --config {params.profile}
         """
 
 rule variant_calling_bcftools_call:
@@ -116,7 +115,7 @@ rule variant_calling_bcftools_call:
     shell:
         """
         bcftools call {input.VCF_GZ} --output {output.VCF_GZ} --output-type v -P {params.mutation_rate} \
-            --variants-only --skip-variants indels --ploidy 1 --consensus-caller;
+            --variants-only --skip-variants indels --ploidy 1 --consensus-caller
         """
 
 rule variant_filtering_allele_freq:
@@ -132,7 +131,7 @@ rule variant_filtering_allele_freq:
     shell:
         """
         bcftools filter --output-type z --soft-filter af --exclude "{params.expr}" {input.VCF_GZ} \
-            --output {output.VCF_GZ};
+            --output {output.VCF_GZ}
         """
 
 rule variant_filtering_depth:
@@ -148,7 +147,7 @@ rule variant_filtering_depth:
     shell:
         """
         bcftools filter --output-type z --soft-filter dp --exclude "DP<{params.min_dp}" {input.VCF_GZ} \
-            --output {output.VCF_GZ};
+            --output {output.VCF_GZ}
         """
 
 rule variant_filtering_qual:
@@ -164,7 +163,7 @@ rule variant_filtering_qual:
     shell:
         """
         bcftools filter --output-type z --soft-filter qual --exclude "QUAL<{params.min_qual}" {input.VCF_GZ} \
-            --output {output.VCF_GZ};
+            --output {output.VCF_GZ}
         """
 
 rule gubbins_consensus_create:
@@ -181,14 +180,14 @@ rule gubbins_consensus_create:
     shell:
         """
         # Compress and index input VCF file
-        cp {input.VCF_GZ} {params.VCF_GZ};
-        bcftools index -f {params.VCF_GZ};
+        cp {input.VCF_GZ} {params.VCF_GZ}
+        bcftools index -f {params.VCF_GZ}
 
         # Create consensus sequence
-        bcftools consensus --exclude 'FILTER!="PASS"' --fasta-ref {input.FASTA} {params.VCF_GZ} > {output.FASTA};
+        bcftools consensus --exclude 'FILTER!="PASS"' --fasta-ref {input.FASTA} {params.VCF_GZ} > {output.FASTA}
 
         # Remove temporary files
-        rm {params.VCF_GZ}*;
+        rm {params.VCF_GZ}*
         """
 
 rule gubbins_consensus_update_header:
@@ -300,7 +299,7 @@ rule gubbins_empty_bed:
         BED = 'gubbins/empty.bed'
     shell:
         """
-        touch {output.BED};
+        touch {output.BED}
         """
 
 rule gubbins_select_bed:
@@ -489,14 +488,14 @@ rule region_filtering_remove_snps:
     shell:
         """
         # Compress and index input file
-        bcftools view --output-type z {input.VCF_GZ} > {params.tempfile};
-        bcftools index -f {params.tempfile};
+        bcftools view --output-type z {input.VCF_GZ} > {params.tempfile}
+        bcftools index -f {params.tempfile}
 
         # Filter VCF file
-        bcftools filter {params.tempfile} --targets-file ^{input.BED} > {output.VCF};
+        bcftools filter {params.tempfile} --targets-file ^{input.BED} > {output.VCF}
 
         # Remove temporary file
-        rm {params.tempfile}*;
+        rm {params.tempfile}*
         """
 
 rule variant_filtering_distance:
@@ -715,8 +714,8 @@ rule select_tree:
         JSON = 'tree/model.json'
     shell:
         """
-        cp {input.NWK} {output.NWK};
-        cp {input.JSON} {output.JSON};
+        cp {input.NWK} {output.NWK}
+        cp {input.JSON} {output.JSON}
         """
 
 rule snp_dists_extract:
@@ -729,7 +728,7 @@ rule snp_dists_extract:
         TSV = temporary('tree/distances-unsorted.tsv')
     shell:
         """
-        snp-dists {input.FASTA} > {output.TSV};
+        snp-dists {input.FASTA} > {output.TSV}
         """
 
 rule snp_dists_sort:
@@ -742,7 +741,10 @@ rule snp_dists_sort:
     output:
         TSV = 'tree/distances.tsv'
     run:
-        workflowutils.sort_snp_dist_matrix(Path(input.NWK), Path(input.TSV), Path(output.TSV))
+        try:
+            workflowutils.sort_snp_dist_matrix(Path(input.NWK), Path(input.TSV), Path(output.TSV))
+        except UnboundLocalError:
+            shutil.copyfile(Path(input.TSV), Path(output.TSV))
 
 rule visualize_tree:
     """
