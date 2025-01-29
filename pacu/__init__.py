@@ -160,7 +160,7 @@ class PACU(object):
             'bcftools': 'bcftools --version',
             'samtools': 'samtools --version',
             'bedtools': 'bedtools --version',
-            'gubbins': 'ml gubbins; gubbins -h',
+            'gubbins': 'gubbins -h',
             'snp-dists': 'snp-dists -v',
             'figtree': 'figtree -help',
         }
