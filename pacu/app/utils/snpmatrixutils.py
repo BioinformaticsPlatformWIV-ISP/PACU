@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -30,7 +31,7 @@ def parse_vcf_file(path_vcf: Path, include_filtered: bool) -> List[VCFRecord]:
     vcf_records = []
     logger.debug(f'Parsing VCF file: {path_vcf}')
     for record in list(vcf.Reader(filename=str(path_vcf))):
-        # Remove non SNP positions
+        # Remove non-SNP positions
         if not record.is_snp:
             continue
         # Remove filtered records (unless specified otherwise)
@@ -49,12 +50,10 @@ def __get_nucleotides_per_position(paths_vcf: List[Path], names: List[str], incl
     :param include_filtered: If True, filtered positions are retained
     :return: Sample_names, nucleotide per position per sample
     """
-    nucl_by_position = {}
+    nucl_by_position = defaultdict(dict)
     for path_vcf, name in zip(paths_vcf, names):
         for record in parse_vcf_file(path_vcf, include_filtered):
             position = SNPPosition(record.CHROM, record.POS, record.REF)
-            if position not in nucl_by_position:
-                nucl_by_position[position] = {}
             if len(record.FILTER) > 0:
                 nucl_by_position[position][name] = 'N'
             else:
@@ -79,7 +78,7 @@ def create_snp_matrix(paths_vcf: List[Path], names: List[str], path_out: Path, p
     :param include_ref: If True, the reference genome is included
     :return: None
     """
-    nucl_by_pos = __get_nucleotides_per_position(paths_vcf, names, False)
+    nucl_by_pos = __get_nucleotides_per_position(paths_vcf, names, True)
 
     # Export TSV file with SNP positions
     if path_tsv is not None:
