@@ -31,6 +31,7 @@ The PACU workflow has the following dependencies:
 - [bcftools 1.17](https://github.com/samtools/bcftools/releases/tag/1.17)
 - [FigTree 1.4.4](http://tree.bio.ed.ac.uk/software/figtree/)
 - [samtools 1.17](https://github.com/samtools/samtools/releases/tag/1.17)
+- [Gubbins 3.1.4](https://github.com/nickjcroucher/gubbins)
 - [snpdists 0.8.2](https://github.com/tseemann/snp-dists)
 - [MEGA 10.0.4](https://www.megasoftware.net/)
 - [IQ-Tree 2.2.5](https://github.com/iqtree/iqtree2)
