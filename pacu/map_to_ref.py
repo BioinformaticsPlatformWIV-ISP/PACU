@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Sequence, Optional, Dict
 
 from pacu import initialize_logging, Command, logger
-from pacu.app.utils import workflowutils, trimmingutils, bamutils, bowtie2utils
+from pacu.app.utils import workflowutils, trimmingutils, bamutils, fastaidxutils
 from pacu.app.utils.cliutils import path_to_absolute
 
 
@@ -36,7 +36,7 @@ class MapToRef(object):
         # Illumina reads
         if self._args.read_type == 'illumina':
             # Index the reference genome (if needed)
-            if bowtie2utils.is_indexed(self._args.ref_fasta):
+            if fastaidxutils.is_bt2_indexed(self._args.ref_fasta):
                 path_ref = self._args.ref_fasta
             else:
                 path_ref = self._illumina_idx_ref()
@@ -50,7 +50,10 @@ class MapToRef(object):
 
         # ONT reads
         else:
-            path_ref = self._ont_idx_ref()
+            if fastaidxutils.is_mm2_indexed(self._args.ref_fasta):
+                path_ref = self._args.ref_fasta
+            else:
+                path_ref = self._ont_idx_ref()
             path_fq = self._ont_trim() if self._args.trim else self._args.fastq_ont
             self._ont_map(path_fq, path_ref, path_bam_temp)
 
@@ -183,7 +186,7 @@ class MapToRef(object):
         Creates an index for the reference genome for ONT mapping.
         :return: Path to indexed FASTA file
         """
-        dir_idx = self._args.dir_working / 'mm2_idx'
+        dir_idx = self._args.dir_working / f'{self._name}-mm2_idx'
         path_ref_link = self.__symlink_ref_fasta(dir_idx)
         path_mni = path_ref_link.parent / f'{path_ref_link.name}.mni'
         command = Command(f'minimap2 -x map-ont -d {path_mni} {path_ref_link}')
