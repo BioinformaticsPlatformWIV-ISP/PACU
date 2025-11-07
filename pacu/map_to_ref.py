@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Sequence, Optional, Dict
 
 from pacu import initialize_logging, Command, logger
-from pacu.app.utils import workflowutils, trimmingutils, bamutils
+from pacu.app.utils import workflowutils, trimmingutils, bamutils, bowtie2utils
 from pacu.app.utils.cliutils import path_to_absolute
 
 
@@ -35,7 +35,13 @@ class MapToRef(object):
 
         # Illumina reads
         if self._args.read_type == 'illumina':
-            path_ref = self._illumina_idx_ref()
+            # Index the reference genome (if needed)
+            if bowtie2utils.is_indexed(self._args.ref_fasta):
+                path_ref = self._args.ref_fasta
+            else:
+                path_ref = self._illumina_idx_ref()
+
+            # Trim the reads (if needed)
             if self._args.trim:
                 fq_dict = self._illumina_trim()
             else:
