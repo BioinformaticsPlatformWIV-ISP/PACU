@@ -50,7 +50,7 @@ def run_snakemake(snakefile: Path, config_path: Path, targets: List[Path], dir_:
     if command.exit_code != 0:
         rule_failed = __get_failed_rule(command.stderr)
         logger.error(f"Failed at rule: {rule_failed if rule_failed is not None else 'n/a'}")
-        raise RuntimeError(f'Error executing Snakemake')
+        raise RuntimeError('Error executing Snakemake')
     return command
 
 

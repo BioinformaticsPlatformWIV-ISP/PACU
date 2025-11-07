@@ -24,7 +24,7 @@ def add_custom_tag(name: str, value: str, bam_in: Path, bam_out: Path) -> None:
 
         # Add custom tag and save header
         header += f'@CO\t{name}:{value}\n'
-        path_header_updated = Path(dir_temp, f'header_updated.txt')
+        path_header_updated = Path(dir_temp, 'header_updated.txt')
         with path_header_updated.open('w') as handle:
             handle.write(header)
 

@@ -41,7 +41,7 @@ def main() -> None:
     :return: None
     """
     initialize_logging()
-    logger.info(f'Running PACU through Galaxy')
+    logger.info('Running PACU through Galaxy')
     args, unparsed_args = parse_galaxy_args()
 
     # Create input directory

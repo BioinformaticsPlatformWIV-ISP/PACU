@@ -16,8 +16,8 @@ def trimmomatic_dir_adapters() -> Path:
     try:
         return Path(os.environ['$TRIMMOMATIC_ADAPTER_DIR'])
     except KeyError:
-        logger.error(f'TRIMMOMATIC_ADAPTER_DIR environment variable not set')
-        raise RuntimeError(f'TRIMMOMATIC_ADAPTER_DIR environment variable not set')
+        logger.error('TRIMMOMATIC_ADAPTER_DIR environment variable not set')
+        raise RuntimeError('TRIMMOMATIC_ADAPTER_DIR environment variable not set')
 
 
 def trimmomatic_collect_output(dir_out: Path) -> Dict[str, Path]:
@@ -32,7 +32,7 @@ def trimmomatic_collect_output(dir_out: Path) -> Dict[str, Path]:
             '2P': next(dir_out.glob('*_2P.fastq.gz'))
         }
     except StopIteration:
-        raise FileNotFoundError(f'No paired end reads survived trimming')
+        raise FileNotFoundError('No paired end reads survived trimming')
 
     # Collect output (single-end reads)
     for key in ('1U', '2U'):

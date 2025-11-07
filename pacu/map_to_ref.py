@@ -31,7 +31,7 @@ class MapToRef(object):
         logger.info(f'Starting mapping helper ({self._args.read_type})')
         self._check_dependencies()
         self._rename_galaxy_input()
-        path_bam_temp = Path(self._args.dir_working, f'{self._name}.bam')
+        path_bam_temp = Path(self._args.dir_working, f'_tmp-{self._name}.bam')
 
         # Illumina reads
         if self._args.read_type == 'illumina':
@@ -88,7 +88,7 @@ class MapToRef(object):
         Trims the Illumina reads.
         :return: None
         """
-        logger.info(f'Trimming Illumina reads')
+        logger.info('Trimming Illumina reads')
 
         # Create directory
         dir_trim = Path(self._args.dir_working, f'{self._name}-trim')
@@ -161,7 +161,7 @@ class MapToRef(object):
         :param min_len: Minimum read length
         :return: Path to trimmed reads
         """
-        logger.info(f'Trimming ONT reads')
+        logger.info('Trimming ONT reads')
 
         # Create directory
         dir_trim = Path(self._args.dir_working, 'trim')
@@ -258,7 +258,7 @@ class MapToRef(object):
         if self._args.trim:
             commands['trimmomatic'] = 'trimmomatic -version'
             commands['seqkit'] = 'seqkit version'
-        logger.info(f'Checking dependencies')
+        logger.info('Checking dependencies')
         for tool, command_str in commands.items():
             command = Command(command_str)
             command.run(self._args.dir_working, disable_logging=True)
@@ -288,7 +288,7 @@ class MapToRef(object):
                 self._args.dir_working, 'input', f'{self._name}.fastq' + ('.gz' if is_gzipped else '')).absolute()
             path_link.symlink_to(self._args.fastq_ont.absolute())
         else:
-            logger.debug(f'Not renaming inputs')
+            logger.debug('Not renaming inputs')
 
     def _determine_name(self) -> str:
         """

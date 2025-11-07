@@ -8,7 +8,7 @@ from Bio import SeqIO
 
 from pacu.app.command import Command
 from pacu.app.utils import snakemakeutils
-from pacu.app.utils.loggingutils import initialize_logging, logger
+from pacu.app.utils.loggingutils import logger
 from .app.utils.cliutils import path_to_absolute
 from .version import __version__
 
@@ -172,7 +172,7 @@ class PACU(object):
             commands['MEGA'] = 'megacc --version'
         else:
             commands['IQ-TREE'] = 'iqtree2 --version'
-        logger.info(f'Checking dependencies')
+        logger.info('Checking dependencies')
         for tool, command in commands.items():
             command = Command(command)
             command.run(self._args.dir_working, disable_logging=True)

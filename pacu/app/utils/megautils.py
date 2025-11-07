@@ -55,7 +55,7 @@ def __create_config_file_model_selection(
     path_template = files('pacu').joinpath('resources/mega/model_sel_ml_nucleotide_template.mao')
     with path_template.open() as handle:
         template = handle.read()
-    logger.info(f'Template parsed')
+    logger.info('Template parsed')
 
     # Create filled-in template
     path_out = dir_ / 'config-model_selection.mao'
@@ -138,7 +138,7 @@ def __create_config_file_tree_construction(
     path_template = files('pacu').joinpath('resources/mega/infer_ml_nucleotide_template.mao')
     with path_template.open() as handle:
         template = handle.read()
-    logger.info(f'Template parsed')
+    logger.info('Template parsed')
 
     # Create filled-in template
     path_out = dir_ / 'config-tree_building.mao'

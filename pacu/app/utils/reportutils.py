@@ -222,7 +222,7 @@ def create_snp_distances_section(path_distances: Path) -> HtmlReportSection:
     :param path_distances: Path with pair-wise SNP distances
     :return: Section
     """
-    section = HtmlReportSection(f'Pair-wise SNP distances')
+    section = HtmlReportSection('Pair-wise SNP distances')
     data_snp_dists = pd.read_table(path_distances)
     header = [HtmlElement('th', '')] + [
         HtmlElement('th', col, [('style', 'writing-mode: vertical-lr;')]) for col in data_snp_dists.columns[1:]]

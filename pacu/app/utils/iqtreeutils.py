@@ -36,4 +36,5 @@ def extract_selected_model(stdout: str) -> Union[str, None]:
         if not m:
             continue
         return m.group(1)
-    logger.warning(f'Cannot extract selected model from IQ-TREE output')
+    logger.warning('Cannot extract selected model from IQ-TREE output')
+
