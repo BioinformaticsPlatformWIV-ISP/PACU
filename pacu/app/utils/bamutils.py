@@ -14,7 +14,7 @@ def add_custom_tag(name: str, value: str, bam_in: Path, bam_out: Path) -> None:
     :param bam_out: Output BAM file
     :return: None
     """
-    with tempfile.TemporaryDirectory(prefix='pacu') as dir_temp:
+    with tempfile.TemporaryDirectory(prefix='pacu_') as dir_temp:
         # Extract the original header
         command = Command(f'samtools view -H {bam_in}')
         command.run(Path(dir_temp))
