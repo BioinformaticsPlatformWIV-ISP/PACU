@@ -73,7 +73,7 @@ def count_overlap(bed_file_a: Path, bed_file_b: Path) -> int:
     :param bed_file_b: Input bed file B
     :return: Number of overlaps
     """
-    with tempfile.TemporaryDirectory(prefix='pacu') as dir_temp:
+    with tempfile.TemporaryDirectory(prefix='pacu_') as dir_temp:
         command = Command(' '.join([
             f'bedtools multiinter -i {bed_file_a} {bed_file_b}',
             '|', "awk -F'\t' 'BEGIN{SUM=0}{SUM+=$3-$2 }END{print SUM}'"
@@ -187,7 +187,7 @@ def plot_newick_phylogeny(path_nwk: Path, path_out: Path, width: int = 600, heig
     :param height: Image height
     :return: None
     """
-    with tempfile.NamedTemporaryFile(prefix='pacu') as file_:
+    with tempfile.NamedTemporaryFile(prefix='pacu_') as file_:
         # Convert the tree to Nexus format
         Phylo.convert(str(path_nwk), 'newick', file_.name, 'nexus')
 

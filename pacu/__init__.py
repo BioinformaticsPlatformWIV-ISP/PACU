@@ -9,6 +9,7 @@ from Bio import SeqIO
 from pacu.app.command import Command
 from pacu.app.utils import snakemakeutils
 from pacu.app.utils.loggingutils import initialize_logging, logger
+from .app.utils.cliutils import path_to_absolute
 from .version import __version__
 
 
@@ -24,7 +25,8 @@ class PACU(object):
         :return: None
         """
         self._args = PACU._parse_arguments(args)
-        self._path_html_out = self._args.output.absolute() / self._args.output_html
+        self._path_html_out = self._args.output.absolute() / (
+            self._args.output_html if self._args.output_html else 'report.html')
         if self._path_html_out.exists():
             self._path_html_out.unlink()
 
@@ -64,12 +66,12 @@ class PACU(object):
         # Input and output
         parser.add_argument('--ilmn-in', help='Directory with Illumina input BAM files')
         parser.add_argument('--ont-in', help='Directory with ONT input BAM files')
-        parser.add_argument('--ref-fasta', required=True, help='Reference FASTA file', type=Path)
-        parser.add_argument('--ref-bed', type=Path, help='BED file with phage regions')
+        parser.add_argument('--ref-fasta', required=True, help='Reference FASTA file', type=path_to_absolute)
+        parser.add_argument('--ref-bed', type=path_to_absolute, help='BED file with phage regions')
         parser.add_argument(
-            '--dir-working', type=Path, help='Working directory', default=Path.cwd())
-        parser.add_argument('--output', required=True, type=Path, help='Output directory')
-        parser.add_argument('--output-html', type=Path, help='Output report name', default='report.html')
+            '--dir-working', type=path_to_absolute, help='Working directory', default=Path.cwd())
+        parser.add_argument('--output', required=True, type=path_to_absolute, help='Output directory')
+        parser.add_argument('--output-html', type=path_to_absolute, help='Output report name')
 
         # Parameters
         parser.add_argument(
@@ -183,7 +185,12 @@ class PACU(object):
         Checks if the provided input files are valid.
         :return: None
         """
+        if self._args.skip_gubbins:
+            return
         with open(self._args.ref_fasta) as handle:
-            seqs = list(SeqIO.parse(handle, 'fasta'))
+            seqs = list(SeqIO.parse(handle, "fasta"))
             if len(seqs) > 1:
-                raise ValueError(f'The reference genome should only contain a single sequence ({len(seqs):,} found)')
+                raise ValueError(
+                    f"Reference genome must contain exactly 1 sequence "
+                    f'(found {len(seqs):,}). If your reference is multi-contig, run with "--skip-gubbins."'
+                )
