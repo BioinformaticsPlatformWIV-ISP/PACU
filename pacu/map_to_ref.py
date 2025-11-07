@@ -109,7 +109,7 @@ class MapToRef(object):
         Creates an index for the reference genome for Illumina mapping.
         :return: Path to indexed FASTA file
         """
-        dir_idx = self._args.dir_working / 'bt2_idx'
+        dir_idx = self._args.dir_working / f'{self._name}-bt2_idx'
         path_ref_link = self.__symlink_ref_fasta(dir_idx)
         command = Command(' '.join(['bowtie2-build', str(path_ref_link.name), str(path_ref_link.name)]))
         command.run(dir_idx)
