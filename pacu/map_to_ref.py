@@ -5,6 +5,7 @@ from typing import Sequence, Optional, Dict
 
 from pacu import initialize_logging, Command, logger
 from pacu.app.utils import workflowutils, trimmingutils, bamutils
+from pacu.app.utils.cliutils import path_to_absolute
 
 
 class MapToRef(object):
@@ -49,6 +50,7 @@ class MapToRef(object):
 
         # Add a custom tag with the original dataset name (used for Galaxy)
         bamutils.add_custom_tag('PACU_name', self._name, path_bam_temp, self._args.output)
+        path_bam_temp.unlink()
 
     @property
     def ref_name(self) -> str:
@@ -80,7 +82,7 @@ class MapToRef(object):
         logger.info(f'Trimming Illumina reads')
 
         # Create directory
-        dir_trim = Path(self._args.dir_working, 'trim')
+        dir_trim = Path(self._args.dir_working, f'{self._name}-trim')
         dir_trim.mkdir(exist_ok=True, parents=True)
 
         # Run trimming
@@ -214,22 +216,23 @@ class MapToRef(object):
         parser = argparse.ArgumentParser()
         # FASTQ input
         parser.add_argument('--read-type', choices=['ont', 'illumina'], required=True)
-        parser.add_argument('--fastq-ont', type=Path)
+        parser.add_argument('--fastq-ont', type=path_to_absolute)
         parser.add_argument('--fastq-ont-name', type=str, help='Original FASTQ name (used for Galaxy)')
-        parser.add_argument('--fastq-illumina', type=Path, nargs=2)
+        parser.add_argument('--fastq-illumina', type=path_to_absolute, nargs=2)
         parser.add_argument(
             '--fastq-illumina-names', type=str, nargs=2, help='Original FASTQ names (used for Galaxy)')
 
         # FASTA input
-        parser.add_argument('--ref-fasta', required=True, help='Reference FASTA file', type=Path)
+        parser.add_argument(
+            '--ref-fasta', required=True, help='Reference FASTA file', type=path_to_absolute)
         parser.add_argument(
             '--ref-fasta-name',  type=str, help='Original FASTA file name (used for Galaxy)')
 
         # Other options
         parser.add_argument(
-            '--dir-working', type=Path, help='Working directory', default=Path.cwd())
+            '--dir-working', type=path_to_absolute, help='Working directory', default=Path.cwd())
         parser.add_argument('--trim', action='store_true', help='Trim reads prior to mapping')
-        parser.add_argument('--output', required=True, type=Path, help='Output BAM file')
+        parser.add_argument('--output', required=True, type=path_to_absolute, help='Output BAM file')
         parser.add_argument('--threads', type=int, default=4)
         return parser.parse_args(args)
 
