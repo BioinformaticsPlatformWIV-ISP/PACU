@@ -3,8 +3,8 @@ import unittest
 from importlib.resources import files
 from pathlib import Path
 
-from pacu import initialize_logging
 from pacu.app.utils import bamutils
+from pacu.app.utils.loggingutils import initialize_logging
 
 
 class TestBAMUtils(unittest.TestCase):

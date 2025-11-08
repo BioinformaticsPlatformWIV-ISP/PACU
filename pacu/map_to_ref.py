@@ -3,9 +3,10 @@ import argparse
 from pathlib import Path
 from typing import Sequence, Optional, Dict
 
-from pacu import initialize_logging, Command, logger
+from pacu import Command, logger
 from pacu.app.utils import workflowutils, trimmingutils, bamutils, fastaidxutils
 from pacu.app.utils.cliutils import path_to_absolute
+from pacu.app.utils.loggingutils import initialize_logging
 
 
 class MapToRef(object):

@@ -121,6 +121,8 @@ A script is included to map reads to a reference genome in FASTA format for both
 The resulting BAM files can be used as input for the SNP workflow. The `--trim` option can be used to perform read
 trimming before mapping.
 
+The workflow generates a novel index for the reference genome if one is not already available.
+
 *Illumina data*
 ```
 PACU_map \
