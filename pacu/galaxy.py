@@ -3,8 +3,9 @@ import argparse
 from pathlib import Path
 from typing import Tuple, List
 
-from pacu import initialize_logging, logger, PACU
+from pacu import PACU, logger
 from pacu.app.utils import workflowutils, bamutils
+from pacu.app.utils.loggingutils import initialize_logging
 
 
 def parse_galaxy_args() -> Tuple[argparse.Namespace, List[str]]:

@@ -1,0 +1,75 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+    "biopython"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pacu_snp"
+dynamic = ["version"]
+description = "Workflow for whole genome sequencing based phylogeny of Illumina and ONT data."
+readme = "README.md"
+requires-python = ">=3"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Bert Bogaerts", email = "bioit@sciensano.be"}
+]
+keywords = ["nanopore", "illumina", "sequencing", "phylogeny"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = [
+    "PuLP==2.7.0",
+    "PyYAML",
+    "UpSetPlot>=0.8.0",
+    "beautifulsoup4",
+    "biopython",
+    "matplotlib>=3.7.1",
+    "numpy>=1.26.4",
+    "pandas>=2.1.0",
+    "pytest",
+    "pyvcf3>=1.0.3",
+    "snakemake==7.18.2",
+    "yattag"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/BioinformaticsPlatformWIV-ISP/PACU/"
+
+[project.scripts]
+PACU = "pacu.run_pacu:main"
+PACU_map = "pacu.map_to_ref:main"
+PACU_galaxy = "pacu.galaxy:main"
+
+[tool.setuptools]
+packages = {find = {}}
+
+[tool.setuptools.dynamic]
+version = {attr = "pacu.version.__version__"}
+
+[tool.setuptools.package-data]
+pacu = [
+    "resources/citations/*.json",
+    "resources/figtree_template.txt",
+    "resources/mega/*.mao",
+    "resources/snp_workflow.smk",
+    "resources/style.css",
+    "resources/testdata/bam/ilmn/*.bai",
+    "resources/testdata/bam/ilmn/*.bam",
+    "resources/testdata/bam/ont/*.bai",
+    "resources/testdata/bam/ont/*.bam",
+    "resources/testdata/fastq/*.fastq.gz",
+    "resources/testdata/mega/model_selection_output.csv",
+    "resources/testdata/vcfs/*.vcf",
+    "resources/testdata/NC_002695.2-subset.fasta",
+    "resources/testdata/phylogeny.nwk",
+    "resources/testdata/snp_matrix.fasta"
+]

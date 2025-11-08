@@ -3,7 +3,7 @@ import unittest
 from importlib.resources import files
 from pathlib import Path
 
-from pacu import initialize_logging
+from pacu.app.utils.loggingutils import initialize_logging
 from pacu.map_to_ref import MapToRef
 
 

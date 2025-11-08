@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from pacu import initialize_logging, PACU
+from pacu import PACU
+from pacu.app.utils.loggingutils import initialize_logging
 
 
 def main() -> None:

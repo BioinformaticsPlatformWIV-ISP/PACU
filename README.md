@@ -16,9 +16,7 @@ Illumina and ONT reads).
 
 If the above command  fails, PACU can be installed in a new environment using the following commands:
 ```
-conda create -n pacu_snp python=3.10
-conda activate pacu_snp
-conda install bioconda::pacu_snp -c bioconda -c conda-forge
+conda create -n pacu_snp -c conda-forge -c bioconda pacu_snp
 ```
 
 **Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
@@ -120,6 +118,8 @@ PACU \
 A script is included to map reads to a reference genome in FASTA format for both ONT and Illumina data.
 The resulting BAM files can be used as input for the SNP workflow. The `--trim` option can be used to perform read
 trimming before mapping.
+
+The workflow generates a novel index for the reference genome if one is not already available.
 
 *Illumina data*
 ```
