@@ -25,6 +25,18 @@ conda create -n pacu_snp -c conda-forge -c bioconda pacu_snp
 **Note:** `MEGA` is currently not available through Conda, it can be installed manually from the link below, or 
 `IQ-Tree` can be used instead.
 
+### Pixi installation (recommended)
+
+PACU can be installed easily using [Pixi](https://github.com/prefix-dev/pixi). 
+
+```bash
+mkdir pixi_pacu
+cd pixi_pacu/
+pixi init
+pixi project channel add bioconda
+pixi add pacu_snp
+``` 
+
 ### Manual installation
 
 The PACU workflow has the following dependencies:
