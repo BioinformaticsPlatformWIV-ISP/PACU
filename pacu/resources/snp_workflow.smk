@@ -335,7 +335,7 @@ rule region_filtering_collect_low_depth_regions:
         data_depth_all = pd.DataFrame()
         # noinspection PyTypeChecker
         for tsv_file in [Path(x) for x in input.TSV]:
-            data_depth_isolate = pd.read_table(tsv_file, names=['chr', 'pos', 'depth'])
+            data_depth_isolate = pd.read_table(tsv_file, names=['chr', 'pos', 'depth'], dtype={'chr': str})
             logging.info(f"Parsing: {tsv_file}")
             data_depth_isolate['isolate'] = tsv_file.parent.name
             data_depth_all = pd.concat([data_depth_all, data_depth_isolate])
