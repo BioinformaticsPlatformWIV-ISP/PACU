@@ -40,7 +40,7 @@ rule samtools_depth_parse:
     params:
         key = lambda wildcards: wildcards.key
     run:
-        data_depth = pd.read_table(input.TSV,  names=['chr', 'pos', 'depth'])
+        data_depth = pd.read_table(input.TSV,  names=['chr', 'pos', 'depth'], dtype={'chr': str})
         with open(output.JSON, 'w') as handle:
             json.dump({
                 'key': params.key,
@@ -382,13 +382,18 @@ rule region_filtering_merge_bed_files:
     output:
         BED = 'region_filtering/merged.bed'
     run:
-        command = Command(' '.join([
-            'bedtools', 'multiinter', '-i', *[str(Path(i).absolute()) for i in (input.BED_a, input.BED_b, input.BED_c)],
-            f'> {Path(output.BED).absolute()}'
-        ]))
-        command.run(Path(output.BED).parent.absolute())
-        if not command.exit_code == 0:
-            raise RuntimeError(f"Error merging BED files: {command.stderr}")
+        paths_bed = input.BED_a, input.BED_b, input.BED_c
+        if all(workflowutils.count_regions(p) == 0 for p in paths_bed):
+            logging.warning("No regions to merge, creating empty output file")
+            Path(output.BED).touch()
+        else:
+            command = Command(' '.join([
+                'bedtools', 'multiinter', '-i', *[str(Path(i).absolute()) for i in paths_bed],
+                f'> {Path(output.BED).absolute()}'
+            ]))
+            command.run(Path(output.BED).parent.absolute())
+            if not command.exit_code == 0:
+                raise RuntimeError(f"Error merging BED files: {command.stderr}")
 
 rule region_filtering_plot:
     """
@@ -492,7 +497,12 @@ rule region_filtering_remove_snps:
         bcftools index -f {params.tempfile}
 
         # Filter VCF file
-        bcftools filter {params.tempfile} --targets-file ^{input.BED} > {output.VCF}
+        if [ -s {input.BED} ]; then
+            bcftools filter {params.tempfile} --targets-file ^{input.BED} > {output.VCF}
+        else
+            # If empty BED file, copy the original VCF
+            bcftools view --output-type v {input.VCF_GZ} > {output.VCF}
+        fi
 
         # Remove temporary file
         rm {params.tempfile}*

@@ -82,6 +82,16 @@ def count_overlap(bed_file_a: Path, bed_file_b: Path) -> int:
     return int(command.stdout)
 
 
+def count_regions(path_bed: Path) -> int:
+    """
+    Counts the number of regions in the input BED file.
+    :param path_bed: Input BED file
+    :return: Number of regions (i.e., lines)
+    """
+    data_in = pd.read_table(path_bed, usecols[0, 1, 2], names=['chr', 'start', 'end'])
+    return len(data_in)
+
+
 def calculate_distance(row: pd.Series) -> Union[int, None]:
     """
     Calculates the distance to the closest SNP.
