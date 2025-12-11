@@ -1,3 +1,6 @@
+[![PyPI version](https://badge.fury.io/py/pacu_snp.svg)](https://badge.fury.io/py/pacu_snp)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/pacu_snp/README.html)
+
 # PACU
 PACU is a workflow for whole genome sequencing based phylogeny of Illumina and ONT R9/R10 data.
 
